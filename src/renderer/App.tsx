@@ -1,17 +1,11 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import CodeEditor from './component/CodeEditor';
-
-const Hello = () => {
-  return <div style={{width:"100vw",height:"100vh"}}>
-    <CodeEditor/>
-  </div>;
-};
+import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
+import MainBroad from './page/MainBroad';
 
 export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<MainBroad />} />
       </Routes>
     </Router>
   );
