@@ -34,7 +34,7 @@
   ],
   "main": "./src/main/main.ts",
   "scripts": {
-    "tw-build":"npx tailwindcss -o ./src/renderer/tailwind.css",
+    "tw-build": "npx tailwindcss -o ./src/renderer/tailwind.css",
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
     "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
@@ -110,16 +110,21 @@
   },
   "dependencies": {
     "@arco-design/web-react": "^2.37.2",
+    "@swc/core": "^1.2.220",
+    "@swc/wasm": "^1.2.220",
     "ahooks": "^3.6.2",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.7",
     "electron-updater": "^5.0.3",
+    "esbuild": "^0.14.51",
     "monaco-editor": "^0.33.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
+    "node-loader": "^2.0.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0",
+    "uglify-js": "^3.16.3",
     "xterm": "^4.19.0"
   },
   "devDependencies": {
