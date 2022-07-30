@@ -1,5 +1,10 @@
 import { editor } from 'monaco-editor';
-import { FunctionComponent, useEffect, useId } from 'react';
+import {
+  FunctionComponent,
+  useEffect,
+  useId,
+  useMemo
+  } from 'react';
 
 interface CodeEditorProps {}
 
@@ -21,6 +26,10 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = () => {
       );
     }
   }, []);
+
+  useEffect(()=>{
+    console.log('rendering')
+  })
 
   return <div style={{ width: '100%', height: '100%' }} id={dom_id} />;
 };
