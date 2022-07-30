@@ -116,7 +116,6 @@
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.7",
     "electron-updater": "^5.0.3",
-    "esbuild": "^0.14.51",
     "monaco-editor": "^0.33.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "node-loader": "^2.0.0",
