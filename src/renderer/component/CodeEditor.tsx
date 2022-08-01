@@ -1,10 +1,5 @@
 import { editor } from 'monaco-editor';
-import {
-  FunctionComponent,
-  useEffect,
-  useId,
-  useMemo
-  } from 'react';
+import { FunctionComponent, useEffect, useId } from 'react';
 
 interface CodeEditorProps {}
 
@@ -16,6 +11,7 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = () => {
       let dom: editor.IStandaloneCodeEditor | undefined = editor.create(
         document.getElementById(dom_id) as HTMLElement,
         {
+          scrollBeyondLastLine: false,
           automaticLayout: true,
           theme: 'vs-dark',
           language: 'typescript',
@@ -27,11 +23,11 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = () => {
     }
   }, []);
 
-  useEffect(()=>{
-    console.log('rendering')
-  })
+  useEffect(() => {
+    console.log('rendering');
+  });
 
-  return <div style={{ width: '100%', height: '100%' }} id={dom_id} />;
+  return <div style={{ height: '100%', width: '100%' }} id={dom_id} />;
 };
 
 export default CodeEditor;
