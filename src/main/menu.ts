@@ -4,7 +4,9 @@ import {
   shell,
   BrowserWindow,
   MenuItemConstructorOptions,
+  dialog,
 } from 'electron';
+import fs from 'fs';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -30,7 +32,7 @@ export default class MenuBuilder {
       process.platform === 'darwin'
         ? this.buildDarwinTemplate()
         : this.buildDefaultTemplate();
-
+    // @ts-ignore
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
 
@@ -198,12 +200,47 @@ export default class MenuBuilder {
         label: '&File',
         submenu: [
           {
-            label: '&Open',
+            label: '&Open Project',
             accelerator: 'Ctrl+O',
+            click: () => {
+              dialog
+                .showOpenDialog(this.mainWindow, {
+                  title: 'Save',
+                  buttonLabel: 'Open',
+                  filters: [
+                    { name: 'JavaScript File', extensions: ['js'] },
+                    { name: 'All Files', extensions: ['*'] },
+                  ],
+                })
+                .then((data) => {
+                  console.log(data.filePaths[0]);
+                  fs.readFile(data.filePaths[0], 'utf-8', (_err, data) => {
+                    this.mainWindow.webContents.send('open-file', data);
+                  });
+                });
+            },
+          },
+          {
+            label: '&New Project',
+            accelerator: 'Ctrl+N',
+          },
+          {
+            type: 'separator',
+          },
+          {
+            label: 'Save Project',
+            accelerator: 'Ctrl+S',
+          },
+          {
+            label: 'Save As',
+            accelerator: 'Ctrl+Shift+S',
+          },
+          {
+            type: 'separator',
           },
           {
             label: '&Close',
-            accelerator: 'Ctrl+W',
+            accelerator: 'Ctrl+Q',
             click: () => {
               this.mainWindow.close();
             },
@@ -214,15 +251,45 @@ export default class MenuBuilder {
         label: '&Edit',
         submenu: [
           {
-            label: '&Open',
+            label: '&Undo',
             accelerator: 'Ctrl+O',
           },
           {
-            label: '&Close',
-            accelerator: 'Ctrl+W',
-            click: () => {
-              this.mainWindow.close();
-            },
+            label: '&Redo',
+            accelerator: 'Ctrl+O',
+          },
+          {
+            type: 'separator',
+          },
+          {
+            label: '&Copy',
+            accelerator: 'Ctrl+C',
+          },
+          {
+            label: '&Cut',
+            accelerator: 'Ctrl+T',
+          },
+          {
+            label: '&Paste',
+            accelerator: 'Ctrl+V',
+          },
+          {
+            type: 'separator',
+          },
+          {
+            label: '&Find in File',
+            accelerator: 'Ctrl+Shift+F',
+          },
+          {
+            label: '&Replace in File',
+            accelerator: 'Ctrl+Shift+R',
+          },
+          {
+            type: 'separator',
+          },
+          {
+            label: '&Turn to Comment',
+            accelerator: 'Ctrl+/',
           },
         ],
       },
@@ -230,91 +297,90 @@ export default class MenuBuilder {
         label: '&Run',
         submenu: [
           {
-            label: '&Open',
+            label: '&Start',
             accelerator: 'Ctrl+O',
           },
           {
-            label: '&Close',
+            label: '&Build',
             accelerator: 'Ctrl+W',
-            click: () => {
-              this.mainWindow.close();
-            },
           },
         ],
       },
       {
         label: '&View',
-        submenu:
-          process.env.NODE_ENV === 'development' ||
-          process.env.DEBUG_PROD === 'true'
-            ? [
-                {
-                  label: '&Reload',
-                  accelerator: 'Ctrl+R',
-                  click: () => {
-                    this.mainWindow.webContents.reload();
-                  },
-                },
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  },
-                },
-                {
-                  label: 'Toggle &Developer Tools',
-                  accelerator: 'Alt+Ctrl+I',
-                  click: () => {
-                    this.mainWindow.webContents.toggleDevTools();
-                  },
-                },
-              ]
-            : [
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  },
-                },
-              ],
+        submenu: [
+          {
+            label: '&Code Map',
+            accelerator: 'Ctrl+R',
+          },
+          {
+            label: 'Toggle &Full Screen',
+            accelerator: 'F11',
+            click: () => {
+              this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
+            },
+          },
+        ],
       },
       {
         label: 'Help',
         submenu: [
           {
-            label: 'Learn More',
+            label: 'Github',
             click() {
-              shell.openExternal('https://electronjs.org');
+              shell.openExternal('https://github.com/carbonscript/');
             },
           },
           {
             label: 'Documentation',
             click() {
-              shell.openExternal(
-                'https://github.com/electron/electron/tree/main/docs#readme'
-              );
+              shell.openExternal('https://carbonscript.github.io');
             },
           },
           {
             label: 'Community Discussions',
             click() {
-              shell.openExternal('https://www.electronjs.org/community');
+              shell.openExternal('https://github.com/carbonscript/');
             },
           },
           {
-            label: 'Search Issues',
+            label: 'About',
             click() {
               shell.openExternal('https://github.com/electron/electron/issues');
             },
           },
         ],
       },
+      process.env.NODE_ENV === 'development'
+        ? {
+            label: '&_Development',
+            submenu: [
+              {
+                label: '&Reload',
+                accelerator: 'Ctrl+R',
+                click: () => {
+                  this.mainWindow.webContents.reload();
+                },
+              },
+              {
+                label: 'Toggle &Full Screen',
+                accelerator: 'F11',
+                click: () => {
+                  this.mainWindow.setFullScreen(
+                    !this.mainWindow.isFullScreen()
+                  );
+                },
+              },
+              {
+                label: 'Toggle &Developer Tools',
+                accelerator: 'Alt+Ctrl+I',
+                click: () => {
+                  this.mainWindow.webContents.toggleDevTools();
+                },
+              },
+            ],
+          }
+        : undefined!,
     ];
 
     return templateDefault;

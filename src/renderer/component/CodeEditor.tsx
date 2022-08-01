@@ -1,33 +1,41 @@
 import { editor } from 'monaco-editor';
-import { FunctionComponent, useEffect, useId } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-interface CodeEditorProps {}
-
-const CodeEditor: FunctionComponent<CodeEditorProps> = () => {
-  const dom_id = useId();
+const CodeEditor = (props: { value?: string; minimap: boolean }) => {
+  const dom_ref = useRef<HTMLDivElement | null>(null);
+  const [codeEditor, setCodeEditor] =
+    useState<editor.IStandaloneCodeEditor | null>(null);
 
   useEffect(() => {
-    if (document.getElementById(dom_id)) {
-      let dom: editor.IStandaloneCodeEditor | undefined = editor.create(
-        document.getElementById(dom_id) as HTMLElement,
-        {
+    if (dom_ref.current) {
+      setCodeEditor(
+        editor.create(dom_ref.current!, {
           scrollBeyondLastLine: false,
           automaticLayout: true,
           theme: 'vs-dark',
           language: 'typescript',
           minimap: {
-            enabled: false,
+            enabled: props.minimap,
           },
-        }
+          value: props.value,
+        })
       );
     }
   }, []);
 
   useEffect(() => {
+    codeEditor?.setValue(props.value!);
+  }, [codeEditor, props.value, props.minimap]);
+
+  useEffect(() => {
     console.log('rendering');
   });
 
-  return <div style={{ height: '100%', width: '100%' }} id={dom_id} />;
+  return <div style={{ height: '100%', width: '100%' }} ref={dom_ref} />;
+};
+
+CodeEditor.defaultProps = {
+  minimap: true,
 };
 
 export default CodeEditor;
