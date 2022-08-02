@@ -16,15 +16,15 @@ export const CodeEditorSlice = createSlice({
   initialState,
   reducers: {
     writeIn: (state: CodeEditorState, action) => {
-      state = { ...state, value: action.payload };
+      return { ...state, value: action.payload };
     },
     cleanEditor: (state: CodeEditorState) => {
-      state = { ...state, value: '' };
+      return { ...state, value: '' };
     },
   },
 });
 
-export const { cleanEditor,writeIn } = CodeEditorSlice.actions;
+export const { cleanEditor, writeIn } = CodeEditorSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCode = (state: RootState) => state.codeEditor.value;

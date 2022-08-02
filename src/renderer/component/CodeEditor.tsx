@@ -1,21 +1,24 @@
 import { editor } from 'monaco-editor';
 import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'renderer/hooks';
-import {
-  CodeEditorState,
-  selectCode,
-  writeIn,
-} from 'renderer/slice/CodeEditorSlice';
+import { selectCode, writeIn } from 'renderer/slice/CodeEditorSlice';
 
 const CodeEditor = (props: {
-  value?: string;
   minimap: boolean;
   getValue?: () => string | undefined;
 }) => {
+
+  // Reference the dom that mounted monaco-editor
   const dom_ref = useRef<HTMLDivElement | null>(null);
+  
+  // Store the codeEditor instance
   const [codeEditor, setCodeEditor] =
     useState<editor.IStandaloneCodeEditor | null>(null);
+
+  // Hook the state from store
   const code = useAppSelector(selectCode);
+
+  // Code dispatcher
   const dispatchCode = useAppDispatch();
 
   useEffect(() => {
@@ -34,21 +37,22 @@ const CodeEditor = (props: {
         })
       );
     }
-
-    codeEditor?.getModel()?.onDidChangeContent((e) => {
-      console.log(e);
-      dispatchCode(writeIn(codeEditor.getValue()));
-      console.log(code);
-    });
   }, []);
+
+  useEffect(()=>{
+    codeEditor?.getModel()?.setValue(code!);
+  },[code])
 
   useEffect(() => {
     codeEditor?.setValue(code!);
-  }, [codeEditor, props.value, props.minimap]);
+    codeEditor?.getModel()?.onDidChangeContent((_e) => {
+      dispatchCode(writeIn(codeEditor.getValue()));
+    });
+  }, [codeEditor, props.minimap]);
 
   useEffect(() => {
-    console.log('rendering');
-  });
+    console.log('The code editor instance has changed');
+  },[codeEditor]);
 
   return <div style={{ height: '100%', width: '100%' }} ref={dom_ref} />;
 };

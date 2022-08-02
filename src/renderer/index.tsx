@@ -1,7 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import "@arco-design/web-react/dist/css/arco.css";
-import './tailwind.css';
 import {store} from './store';
 import { Provider } from 'react-redux';
 

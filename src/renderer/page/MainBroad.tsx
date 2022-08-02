@@ -1,20 +1,21 @@
+import { useState } from 'react';
 import CodeEditor from 'renderer/component/CodeEditor';
-import { useRef, useState } from 'react';
 import { StatusBar } from 'renderer/component/StatusBar';
+import { useAppDispatch, useAppSelector } from 'renderer/hooks';
+import { selectCode, writeIn } from 'renderer/slice/CodeEditorSlice';
 
 export const MainBroad = () => {
-  const [editor_value, set_editor_value] = useState<string>('aaaaaaa');
-  const editor_ref = useRef();
-
+  const code = useAppSelector(selectCode);
+  const dispatchCode = useAppDispatch();
   // Receive the icp message.
   window.electron.ipcRenderer.on('open-file', (value: string) => {
-    set_editor_value(value);
+    dispatchCode(writeIn(value));
     console.log(value);
   });
 
-  window.electron.ipcRenderer.on('fetch-editor',()=>{
-    window.electron.ipcRenderer.sendMessage('give-editor',editor_value);
-  })
+  window.electron.ipcRenderer.on('fetch-editor', () => {
+    window.electron.ipcRenderer.sendMessage('give-editor', code);
+  });
 
   return (
     <div
@@ -25,10 +26,10 @@ export const MainBroad = () => {
       }}
     >
       <div
-        className="tw-h-screen tw-w-screen"
-        style={{ height: 'calc(100vh - 22px)' }}
+        className=""
+        style={{ height: 'calc(100vh - 22px)', width: '100vw' }}
       >
-        <CodeEditor value={editor_value} />
+        <CodeEditor />
       </div>
       <div style={{ height: '22px' }}>
         <StatusBar text="This is The Status Bar" />

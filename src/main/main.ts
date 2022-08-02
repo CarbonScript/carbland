@@ -32,7 +32,7 @@ ipcMain.on('ipc-example', async (event, arg) => {
 });
 
 ipcMain.on('give-editor',(event,args)=>{
-  console.log(args);
+  // console.log(args);
 })
 
 
