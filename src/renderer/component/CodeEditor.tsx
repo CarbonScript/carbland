@@ -18,6 +18,7 @@ const CodeEditor = (props: { value?: string; minimap: boolean }) => {
             enabled: props.minimap,
           },
           value: props.value,
+          fontFamily:"consolas,Microsoft YaHei",
         })
       );
     }
