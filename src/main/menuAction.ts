@@ -23,5 +23,4 @@ export const menuTriggedNewFile = (window: BrowserWindow) => {};
 
 export const menuTriggedSaveFile = (window: BrowserWindow) => {
     window.webContents.send('fetch-editor');
-
 };
