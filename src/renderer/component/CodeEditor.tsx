@@ -1,5 +1,11 @@
 import { editor } from 'monaco-editor';
 import { useEffect, useRef, useState } from 'react';
+import { useAppDispatch, useAppSelector } from 'renderer/hooks';
+import {
+  CodeEditorState,
+  selectCode,
+  writeIn,
+} from 'renderer/slice/CodeEditorSlice';
 
 const CodeEditor = (props: {
   value?: string;
@@ -9,6 +15,8 @@ const CodeEditor = (props: {
   const dom_ref = useRef<HTMLDivElement | null>(null);
   const [codeEditor, setCodeEditor] =
     useState<editor.IStandaloneCodeEditor | null>(null);
+  const code = useAppSelector(selectCode);
+  const dispatchCode = useAppDispatch();
 
   useEffect(() => {
     if (dom_ref.current) {
@@ -21,19 +29,19 @@ const CodeEditor = (props: {
           minimap: {
             enabled: props.minimap,
           },
-          value: props.value,
+          value: code,
           fontFamily: 'consolas,Microsoft YaHei',
         })
       );
     }
+    codeEditor?.getModel()?.onDidChangeContent((e) => {
+      dispatchCode(writeIn(codeEditor.getValue()));
+      console.log(code);
+    });
   }, []);
 
-  props.getValue = (): string | undefined => {
-    return codeEditor?.getValue();
-  };
-
   useEffect(() => {
-    codeEditor?.setValue(props.value!);
+    codeEditor?.setValue(code!);
   }, [codeEditor, props.value, props.minimap]);
 
   useEffect(() => {

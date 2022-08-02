@@ -110,6 +110,7 @@
   },
   "dependencies": {
     "@arco-design/web-react": "^2.37.2",
+    "@reduxjs/toolkit": "^1.8.3",
     "@swc/core": "^1.2.220",
     "@swc/wasm": "^1.2.220",
     "ahooks": "^3.6.2",
@@ -123,6 +124,7 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-icons": "^4.4.0",
+    "react-redux": "^8.0.2",
     "react-router-dom": "^6.3.0",
     "uglify-js": "^3.16.3",
     "xterm": "^4.19.0"
