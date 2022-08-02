@@ -5,16 +5,27 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
   dialog,
+  ipcRenderer,
 } from 'electron';
 import fs from 'fs';
+import { menuTriggedOpenFile, menuTriggedSaveFile } from './menuAction';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
   submenu?: DarwinMenuItemConstructorOptions[] | Menu;
 }
 
+interface MenuState {
+  enableSave: boolean;
+  checkedCodeMap: boolean;
+}
+
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
+  menuState: MenuState = {
+    checkedCodeMap: true,
+    enableSave: true,
+  };
 
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
@@ -203,21 +214,7 @@ export default class MenuBuilder {
             label: '&Open Project',
             accelerator: 'Ctrl+O',
             click: () => {
-              dialog
-                .showOpenDialog(this.mainWindow, {
-                  title: 'Save',
-                  buttonLabel: 'Open',
-                  filters: [
-                    { name: 'JavaScript File', extensions: ['js'] },
-                    { name: 'All Files', extensions: ['*'] },
-                  ],
-                })
-                .then((data) => {
-                  console.log(data.filePaths[0]);
-                  fs.readFile(data.filePaths[0], 'utf-8', (_err, data) => {
-                    this.mainWindow.webContents.send('open-file', data);
-                  });
-                });
+              menuTriggedOpenFile(this.mainWindow);
             },
           },
           {
@@ -230,6 +227,9 @@ export default class MenuBuilder {
           {
             label: 'Save Project',
             accelerator: 'Ctrl+S',
+            click:()=>{
+                menuTriggedSaveFile(this.mainWindow)
+            }
           },
           {
             label: 'Save As',
@@ -312,6 +312,16 @@ export default class MenuBuilder {
           {
             label: '&Code Map',
             accelerator: 'Ctrl+R',
+            type: 'checkbox',
+            checked: this.menuState.checkedCodeMap,
+            click: () => {
+              this.menuState.checkedCodeMap = !this.menuState.checkedCodeMap;
+              console.log(this.menuState.checkedCodeMap);
+              this.mainWindow.webContents.send(
+                'set-codemap',
+                this.menuState.checkedCodeMap
+              );
+            },
           },
           {
             label: 'Toggle &Full Screen',
@@ -346,7 +356,17 @@ export default class MenuBuilder {
           {
             label: 'About',
             click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
+              const message = `A cross-platform code editors and integrated development environments for carbon script. Based on some open source projects monaco-editor and vscode. This project is developed by Yuteng Zhang. And it can be used as Coursework
+
+              Carbland Version: 1.0.0
+              Complier Version: 0.2.0
+              `;
+              dialog.showMessageBox({
+                title: 'About Carbland',
+                message: message,
+                buttons: ['Close'],
+                type: 'info',
+              });
             },
           },
         ],

@@ -16,9 +16,8 @@ contextBridge.exposeInMainWorld('electron', {
     once(channel: Channels, func: (...args: any) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
+    invoke(channel: Channels, ...args: any[]) {
+      return ipcRenderer.invoke(channel, ...args);
+    },
   },
 });
-
-// contextBridge.exposeInMainWorld('electronAPI', {
-//   onOpenFile: (callback) => ipcRenderer.on('open-file', callback)
-// })

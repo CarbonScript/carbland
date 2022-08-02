@@ -1,7 +1,11 @@
 import { editor } from 'monaco-editor';
 import { useEffect, useRef, useState } from 'react';
 
-const CodeEditor = (props: { value?: string; minimap: boolean }) => {
+const CodeEditor = (props: {
+  value?: string;
+  minimap: boolean;
+  getValue?: () => string | undefined;
+}) => {
   const dom_ref = useRef<HTMLDivElement | null>(null);
   const [codeEditor, setCodeEditor] =
     useState<editor.IStandaloneCodeEditor | null>(null);
@@ -18,11 +22,15 @@ const CodeEditor = (props: { value?: string; minimap: boolean }) => {
             enabled: props.minimap,
           },
           value: props.value,
-          fontFamily:"consolas,Microsoft YaHei",
+          fontFamily: 'consolas,Microsoft YaHei',
         })
       );
     }
   }, []);
+
+  props.getValue = (): string | undefined => {
+    return codeEditor?.getValue();
+  };
 
   useEffect(() => {
     codeEditor?.setValue(props.value!);
