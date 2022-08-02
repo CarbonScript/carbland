@@ -185,7 +185,6 @@
     "sass": "^1.51.0",
     "sass-loader": "^12.6.0",
     "style-loader": "^3.3.1",
-    "tailwindcss": "^3.1.6",
     "terser-webpack-plugin": "^5.3.1",
     "ts-jest": "^28.0.2",
     "ts-loader": "^9.3.0",

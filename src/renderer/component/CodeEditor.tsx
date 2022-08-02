@@ -34,7 +34,9 @@ const CodeEditor = (props: {
         })
       );
     }
+
     codeEditor?.getModel()?.onDidChangeContent((e) => {
+      console.log(e);
       dispatchCode(writeIn(codeEditor.getValue()));
       console.log(code);
     });
