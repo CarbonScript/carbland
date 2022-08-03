@@ -10,7 +10,13 @@ import {
   menuTriggeredEditorCopy,
   menuTriggeredOpenFile,
   menuTriggeredSaveFile,
-} from './menuTriggers';
+} from './menu-triggers';
+
+/**
+ * This module is used to build the window menu based on the provided menu template.
+ * And provides the status of the window menu, so it reflects to browser window view.
+ * But the trigger event of the menu is separated into the file menu-trigger.ts
+ */
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;

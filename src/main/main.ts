@@ -1,3 +1,9 @@
+import log from 'electron-log';
+import MenuBuilder from './menu';
+import path from 'path';
+import { app, BrowserWindow, shell } from 'electron';
+import { autoUpdater } from 'electron-updater';
+import { resolveHtmlPath } from './util';
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 /**
@@ -7,14 +13,9 @@
  *
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
+ * 
+ * Author: Yuteng Zhang
  */
-import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
-import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
-import { CodeEditorState } from 'renderer/slice/CodeEditorSlice';
 
 /**
  * Get the current environment from the environment variable
@@ -35,16 +36,6 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
-
-ipcMain.on('give-editor', (_event, args: CodeEditorState) => {
-  console.log('rec:', args);
-});
 
 /**
  * In process production mode
@@ -134,24 +125,26 @@ const createWindow = async () => {
 };
 
 /**
- * Add event listeners...
+ * Listen to windows are all closing
+ * Respect the OSX convention of having the application in memory even
+ * after all windows have been closed
  */
-
 app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
+/*
+ * When application is ready
+ * On macOS it's common to re-create a window in the app when the
+ * dock icon is clicked and there are no other windows open.
+ */
 app
   .whenReady()
   .then(() => {
     createWindow();
     app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
       console.log('The process is startup...');
     });

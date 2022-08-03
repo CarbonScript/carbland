@@ -5,7 +5,7 @@ import { initEditor } from 'renderer/slice/CodeEditorSlice';
 /**
  * Return the code editor instance mounted on div element.
  * 
- * *** Warning *** 
+ * *** WARNING *** 
  * 
  * This component can only be used once in React.
  * Because the instance it mounts is only stored in one redux-store.

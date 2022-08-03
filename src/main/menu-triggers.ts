@@ -1,6 +1,15 @@
-import { BrowserWindow, dialog } from 'electron';
 import fs from 'fs';
+import { BrowserWindow, dialog } from 'electron';
 import { menuState } from './menu';
+
+/**
+ * menu-trigger.ts
+ * Here is used to define the window menu trigger.
+ * Mainly for the processing of click events
+ * 
+ * Author: Yuteng Zhang   
+ */
+
 
 /**
  * Open file action triggered by menu.
@@ -10,7 +19,6 @@ export const menuTriggeredOpenFile = (window: BrowserWindow) => {
   dialog
     .showOpenDialog(window, {
       title: 'Open File',
-      buttonLabel: 'Open',
       filters: [
         { name: 'JavaScript File', extensions: ['js'] },
         { name: 'All Files', extensions: ['*'] },
