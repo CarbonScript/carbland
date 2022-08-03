@@ -22,11 +22,26 @@ interface MenuState {
   checkedCodeMap: boolean;
 }
 
+/**
+ * Get the current environment from the environment variable
+ * Production mode or development mode
+ */
+const IS_DEBUG_MODE =
+  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
+/**
+ * Used to store the state of the menu. 
+ * Such as selected menu, available menu items, etc.
+ */
 export const menuState: MenuState = {
   checkedCodeMap: true,
   enableSave: true,
 };
 
+/**
+ * MenuBuilder for electron BrowserWindow.
+ * Assign the specified menu template.
+ */
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
 
@@ -34,6 +49,11 @@ export default class MenuBuilder {
     this.mainWindow = mainWindow;
   }
 
+  /**
+   * Build browserWindow menu according to environment
+   * @return {Menu} The menu for browserWindow.
+   * @memberof MenuBuilder
+   */
   buildMenu(): Menu {
     if (
       process.env.NODE_ENV === 'development' ||
@@ -53,6 +73,11 @@ export default class MenuBuilder {
     return menu;
   }
 
+  /**
+   * Add the 'Inspect Element' menu to the BrowserWindow.
+   * Only works in development mode.
+   * @memberof MenuBuilder
+   */
   setupDevelopmentEnvironment(): void {
     this.mainWindow.webContents.on('context-menu', (_, props) => {
       const { x, y } = props;
@@ -68,6 +93,12 @@ export default class MenuBuilder {
     });
   }
 
+  /**
+   * Create the darwin platform menu template in array.
+   * Apply to OSX system.
+   * @return {MenuItemConstructorOptions[]}
+   * @memberof MenuBuilder
+   */
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
       label: 'Electron',
@@ -208,199 +239,215 @@ export default class MenuBuilder {
     return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
   }
 
+  /**
+   * Create the default menu template in array.
+   * Apply to Windows, Linux GUI.
+   * @returns The array for menu template.
+   * @memberof MenuBuilder
+   */
   buildDefaultTemplate(): MenuItemConstructorOptions[] {
-    const templateDefault: MenuItemConstructorOptions[] = [
-      {
-        label: '&File',
-        submenu: [
-          {
-            label: '&Open Project',
-            accelerator: 'Ctrl+O',
-            click: () => {
-              menuTriggeredOpenFile(this.mainWindow);
-            },
-          },
-          {
-            label: '&New Project',
-            accelerator: 'Ctrl+N',
-          },
-          {
-            type: 'separator',
-          },
-          {
-            label: 'Save Project',
-            accelerator: 'Ctrl+S',
-            click: () => {
-              menuTriggeredSaveFile(this.mainWindow);
-            },
-          },
-          {
-            label: 'Save As',
-            accelerator: 'Ctrl+Shift+S',
-          },
-          {
-            type: 'separator',
-          },
-          {
-            label: '&Close',
-            accelerator: 'Ctrl+Q',
-            click: () => {
-              this.mainWindow.close();
-            },
-          },
-        ],
-      },
-      {
-        label: '&Edit',
-        submenu: [
-          {
-            label: '&Undo',
-            accelerator: 'Ctrl+O',
-          },
-          {
-            label: '&Redo',
-            accelerator: 'Ctrl+O',
-          },
-          {
-            type: 'separator',
-          },
-          {
-            label: '&Copy',
-            accelerator: 'Ctrl+C',
-            click: () => {
-              menuTriggeredEditorCopy(this.mainWindow);
-            },
-          },
-          {
-            label: '&Cut',
-            accelerator: 'Ctrl+T',
-          },
-          {
-            label: '&Paste',
-            accelerator: 'Ctrl+V',
-          },
-          {
-            type: 'separator',
-          },
-          {
-            label: '&Find in File',
-            accelerator: 'Ctrl+Shift+F',
-          },
-          {
-            label: '&Replace in File',
-            accelerator: 'Ctrl+Shift+R',
-          },
-          {
-            type: 'separator',
-          },
-          {
-            label: '&Turn to Comment',
-            accelerator: 'Ctrl+/',
-          },
-        ],
-      },
-      {
-        label: '&Run',
-        submenu: [
-          {
-            label: '&Start',
-            accelerator: 'Ctrl+O',
-            click: () => {},
-          },
-          {
-            label: '&Build',
-            accelerator: 'Ctrl+W',
-          },
-        ],
-      },
-      {
-        label: '&View',
-        submenu: [
-          {
-            label: '&Code Map',
-            accelerator: 'Ctrl+R',
-            type: 'checkbox',
-            checked: menuState.checkedCodeMap,
-            click: () => {},
-          },
-          {
-            label: 'Toggle &Full Screen',
-            accelerator: 'F11',
-            click: () => {
-              this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-            },
-          },
-        ],
-      },
-      {
-        label: 'Help',
-        submenu: [
-          {
-            label: 'Github',
-            click() {
-              shell.openExternal('https://github.com/carbonscript/');
-            },
-          },
-          {
-            label: 'Documentation',
-            click() {
-              shell.openExternal('https://carbonscript.github.io');
-            },
-          },
-          {
-            label: 'Community Discussions',
-            click() {
-              shell.openExternal('https://github.com/carbonscript/');
-            },
-          },
-          {
-            label: 'About',
-            click() {
-              const message = `A cross-platform code editors and integrated development environments for carbon script. Based on some open source projects monaco-editor and vscode. This project is developed by Yuteng Zhang. And it can be used as Coursework
 
-              Carbland Version: 1.0.0
-              Complier Version: 0.2.0
+    const FileMenu: MenuItemConstructorOptions = {
+      label: '&File',
+      submenu: [
+        {
+          label: '&Open Project',
+          accelerator: 'Ctrl+O',
+          click: () => {
+            menuTriggeredOpenFile(this.mainWindow);
+          },
+        },
+        {
+          label: '&New Project',
+          accelerator: 'Ctrl+N',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: 'Save Project',
+          accelerator: 'Ctrl+S',
+          click: () => {
+            menuTriggeredSaveFile(this.mainWindow);
+          },
+        },
+        {
+          label: 'Save As',
+          accelerator: 'Ctrl+Shift+S',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: '&Close',
+          accelerator: 'Ctrl+Q',
+          click: () => {
+            this.mainWindow.close();
+          },
+        },
+      ],
+    };
 
-              Powered by Electron & React
-              `;
-              dialog.showMessageBox({
-                title: 'About Carbland',
-                message: message,
-                buttons: ['Close'],
-                type: 'info',
-              });
-            },
+    const EditMenu: MenuItemConstructorOptions = {
+      label: '&Edit',
+      submenu: [
+        {
+          label: '&Undo',
+          accelerator: 'Ctrl+O',
+        },
+        {
+          label: '&Redo',
+          accelerator: 'Ctrl+O',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: '&Copy',
+          accelerator: 'Ctrl+C',
+          click: () => {
+            menuTriggeredEditorCopy(this.mainWindow);
           },
-        ],
-      },
-      {
-        label: '&_Development',
-        submenu: [
-          {
-            label: '&Reload',
-            accelerator: 'Ctrl+R',
-            click: () => {
-              this.mainWindow.webContents.reload();
-            },
-          },
-          {
-            label: 'Toggle &Full Screen',
-            accelerator: 'F11',
-            click: () => {
-              this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-            },
-          },
-          {
-            label: 'Toggle &Developer Tools',
-            accelerator: 'Alt+Ctrl+I',
-            click: () => {
-              this.mainWindow.webContents.toggleDevTools();
-            },
-          },
-        ],
-      },
-    ];
+        },
+        {
+          label: '&Cut',
+          accelerator: 'Ctrl+T',
+        },
+        {
+          label: '&Paste',
+          accelerator: 'Ctrl+V',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: '&Find in File',
+          accelerator: 'Ctrl+Shift+F',
+        },
+        {
+          label: '&Replace in File',
+          accelerator: 'Ctrl+Shift+R',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: '&Turn to Comment',
+          accelerator: 'Ctrl+/',
+        },
+      ],
+    };
 
-    return templateDefault;
+    const RunMenu: MenuItemConstructorOptions = {
+      label: '&Run',
+      submenu: [
+        {
+          label: '&Start',
+          accelerator: 'Ctrl+O',
+          click: () => {},
+        },
+        {
+          label: '&Build',
+          accelerator: 'Ctrl+W',
+        },
+      ],
+    };
+
+    const ViewMenu: MenuItemConstructorOptions = {
+      label: '&View',
+      submenu: [
+        {
+          label: '&Code Map',
+          accelerator: 'Ctrl+R',
+          type: 'checkbox',
+          checked: menuState.checkedCodeMap,
+          click: () => {},
+        },
+        {
+          label: 'Toggle &Full Screen',
+          accelerator: 'F11',
+          click: () => {
+            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
+          },
+        },
+      ],
+    };
+
+    const HelpMenu: MenuItemConstructorOptions = {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'Github',
+          click() {
+            shell.openExternal('https://github.com/carbonscript/');
+          },
+        },
+        {
+          label: 'Documentation',
+          click() {
+            shell.openExternal('https://carbonscript.github.io');
+          },
+        },
+        {
+          label: 'Community Discussions',
+          click() {
+            shell.openExternal('https://github.com/carbonscript/');
+          },
+        },
+        {
+          label: 'About',
+          click() {
+            const message = `A cross-platform code editors and integrated development environments for carbon script. Based on some open source projects monaco-editor and vscode. This project is developed by Yuteng Zhang. And it can be used as Coursework
+
+            Carbland Version: 1.0.0
+            Complier Version: 0.2.0
+
+            Powered by Electron & React
+            `;
+            dialog.showMessageBox({
+              title: 'About Carbland',
+              message: message,
+              buttons: ['Close'],
+              type: 'info',
+            });
+          },
+        },
+      ],
+    };
+
+    const _DevMenu: MenuItemConstructorOptions = {
+      label: '&_Development',
+      submenu: [
+        {
+          label: '&Reload',
+          accelerator: 'Ctrl+R',
+          click: () => {
+            this.mainWindow.webContents.reload();
+          },
+        },
+        {
+          label: 'Toggle &Full Screen',
+          accelerator: 'F11',
+          click: () => {
+            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
+          },
+        },
+        {
+          label: 'Toggle &Developer Tools',
+          accelerator: 'Alt+Ctrl+I',
+          click: () => {
+            this.mainWindow.webContents.toggleDevTools();
+          },
+        },
+      ],
+    };
+
+    const DefaultTemplate = [FileMenu, EditMenu, RunMenu, ViewMenu, HelpMenu];
+
+    if (IS_DEBUG_MODE) {
+      DefaultTemplate.push(_DevMenu);
+      return DefaultTemplate;
+    }
+    return DefaultTemplate;
   }
 }
