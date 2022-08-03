@@ -1,17 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
 import CodeEditorSlice from './slice/CodeEditorSlice';
-// ...
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore these action types
+        /*
+         *   Because the entire editor instance needs to be stored in the redux store.
+         *   But the editor created instance is not serializable.
+         *   So this will cause redux to throw an error.
+         *   So you need to configure redux to ignore the serialization check for editor instance
+         */
         ignoredActions: ['codeEditor/initEditor'],
-        // Ignore these field paths in all actions
-        ignoredActionPaths: ['meta.arg', 'payload.timestamp'],
-        // Ignore these paths in the state
-        ignoredPaths: ['codeEditor.editor'],
+        ignoredPaths: ['codeEditor.editorInstance'],
+        
       },
     }),
   reducer: {
@@ -19,7 +21,5 @@ export const store = configureStore({
   },
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;

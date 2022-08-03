@@ -4,6 +4,8 @@ import { useAppSelector } from 'renderer/hooks';
 import { selectEditor } from 'renderer/slice/CodeEditorSlice';
 
 export const MainBroad = () => {
+
+  // Hooks the editor instance from redux store.
   const editor = useAppSelector(selectEditor);
 
   // Receive the icp message.
