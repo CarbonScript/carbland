@@ -1,22 +1,34 @@
+import { useEffect, useRef } from 'react';
 import CodeEditor from 'renderer/component/CodeEditor';
 import { StatusBar } from 'renderer/component/StatusBar';
-import { useAppSelector } from 'renderer/hooks';
+import { useAppSelector } from 'renderer/hook/redux-hooks';
 import { selectEditor } from 'renderer/slice/CodeEditorSlice';
 
 export const MainBroad = () => {
-
   // Hooks the editor instance from redux store.
   const editor = useAppSelector(selectEditor);
 
-  // Receive the icp message.
-  window.electron.ipcRenderer.on('open-file', (value: string) => {
-    editor?.setValue(value);
-    console.log('read:',value);
-  });
+  useEffect(() => {
+    // Receive the icp message.
+    window.electron.ipcRenderer.on('open-file', (value: string) => {
+      editor?.setValue(value);
+      console.log('read:', value);
+    });
 
-  window.electron.ipcRenderer.on('fetch-editor', () => {
-    window.electron.ipcRenderer.sendMessage('give-editor', editor?.getValue());
-  });
+    window.electron.ipcRenderer.on('fetch-editor', () => {
+      window.electron.ipcRenderer.sendMessage(
+        'give-editor',
+        editor?.getValue()
+      );
+      console.log('b', editor?.getValue());
+    });
+
+    return () => {
+      console.log('cleaned')
+      window.electron.ipcRenderer.removeAllListeners('fetch-editor');
+      window.electron.ipcRenderer.removeAllListeners('give-editor');
+    };
+  }, []);
 
   return (
     <div

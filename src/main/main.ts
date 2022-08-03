@@ -16,6 +16,16 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { CodeEditorState } from 'renderer/slice/CodeEditorSlice';
 
+/**
+ * Get the current environment from the environment variable
+ * Production mode or development mode
+ */
+const IS_DEBUG_MODE =
+  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
+/**
+ * Define an updater, which can update the program during startup.
+ */
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -33,26 +43,29 @@ ipcMain.on('ipc-example', async (event, arg) => {
 });
 
 ipcMain.on('give-editor', (_event, args: CodeEditorState) => {
-  console.log('rec:',args);
+  console.log('rec:', args);
 });
 
-if (process.env.NODE_ENV === 'production') {
+/**
+ * In process production mode
+ * enable codemap support and debug support
+ */
+if (IS_DEBUG_MODE) {
+  require('electron-debug')();
+} else {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
 }
 
-const isDebug =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
-
-if (isDebug) {
-  require('electron-debug')();
-}
-
+/**
+ * Install devtools for electron
+ * This process only happens in debug mode
+ * @return {*}
+ */
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
   const extensions = ['REACT_DEVELOPER_TOOLS'];
-
   return installer
     .default(
       extensions.map((name) => installer[name]),
@@ -61,8 +74,11 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
+/**
+ * Create the BrowserWindow
+ */
 const createWindow = async () => {
-  if (isDebug) {
+  if (IS_DEBUG_MODE) {
     await installExtensions();
   }
 
@@ -70,7 +86,7 @@ const createWindow = async () => {
     ? path.join(process.resourcesPath, 'assets')
     : path.join(__dirname, '../../assets');
 
-  const getAssetPath = (...paths: string[]): string => {
+  const getAssetsPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
@@ -78,7 +94,7 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 728,
-    icon: getAssetPath('icon.png'),
+    icon: getAssetsPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
@@ -106,15 +122,15 @@ const createWindow = async () => {
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
-  // Open urls in the user's browser
+  // It allows open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
 
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  new AppUpdater();
+  // Enable this if your app does not use auto updates
+  let _enable_app_update: boolean = false;
+  if (_enable_app_update) new AppUpdater();
 };
 
 /**
@@ -137,6 +153,7 @@ app
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
+      console.log('The process is startup...');
     });
   })
   .catch(console.log);

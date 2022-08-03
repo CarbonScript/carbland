@@ -1,7 +1,12 @@
 import {
-  app, BrowserWindow, dialog, Menu, MenuItemConstructorOptions, shell
+  app,
+  BrowserWindow,
+  dialog,
+  Menu,
+  MenuItemConstructorOptions,
+  shell,
 } from 'electron';
-import { menuTriggedOpenFile, menuTriggedSaveFile } from './menuAction';
+import { menuTriggeredOpenFile, menuTriggeredSaveFile } from './menuTriggers';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -13,12 +18,13 @@ interface MenuState {
   checkedCodeMap: boolean;
 }
 
+export const menuState: MenuState = {
+  checkedCodeMap: true,
+  enableSave: true,
+};
+
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
-  menuState: MenuState = {
-    checkedCodeMap: true,
-    enableSave: true,
-  };
 
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
@@ -207,7 +213,7 @@ export default class MenuBuilder {
             label: '&Open Project',
             accelerator: 'Ctrl+O',
             click: () => {
-              menuTriggedOpenFile(this.mainWindow);
+              menuTriggeredOpenFile(this.mainWindow);
             },
           },
           {
@@ -220,9 +226,9 @@ export default class MenuBuilder {
           {
             label: 'Save Project',
             accelerator: 'Ctrl+S',
-            click:()=>{
-                menuTriggedSaveFile(this.mainWindow);
-            }
+            click: () => {
+              menuTriggeredSaveFile(this.mainWindow);
+            },
           },
           {
             label: 'Save As',
@@ -306,15 +312,8 @@ export default class MenuBuilder {
             label: '&Code Map',
             accelerator: 'Ctrl+R',
             type: 'checkbox',
-            checked: this.menuState.checkedCodeMap,
-            click: () => {
-              this.menuState.checkedCodeMap = !this.menuState.checkedCodeMap;
-              console.log(this.menuState.checkedCodeMap);
-              this.mainWindow.webContents.send(
-                'set-codemap',
-                this.menuState.checkedCodeMap
-              );
-            },
+            checked: menuState.checkedCodeMap,
+            click: () => {},
           },
           {
             label: 'Toggle &Full Screen',
@@ -353,6 +352,7 @@ export default class MenuBuilder {
 
               Carbland Version: 1.0.0
               Complier Version: 0.2.0
+              
               `;
               dialog.showMessageBox({
                 title: 'About Carbland',
