@@ -5,7 +5,6 @@ import { selectCode, writeIn } from 'renderer/slice/CodeEditorSlice';
 
 const CodeEditor = (props: {
   minimap: boolean;
-  getValue?: () => string | undefined;
 }) => {
 
   // Reference the dom that mounted monaco-editor
@@ -48,6 +47,7 @@ const CodeEditor = (props: {
     codeEditor?.getModel()?.onDidChangeContent((_e) => {
       dispatchCode(writeIn(codeEditor.getValue()));
     });
+
   }, [codeEditor, props.minimap]);
 
   useEffect(() => {

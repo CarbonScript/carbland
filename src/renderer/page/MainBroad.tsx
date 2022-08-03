@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import CodeEditor from 'renderer/component/CodeEditor';
 import { StatusBar } from 'renderer/component/StatusBar';
 import { useAppDispatch, useAppSelector } from 'renderer/hooks';
