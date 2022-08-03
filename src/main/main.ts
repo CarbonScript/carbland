@@ -129,7 +129,7 @@ const createWindow = async () => {
   });
 
   // Enable this if your app does not use auto updates
-  let _enable_app_update: boolean = false;
+  let _enable_app_update: boolean = true;
   if (_enable_app_update) new AppUpdater();
 };
 

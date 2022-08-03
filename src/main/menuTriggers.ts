@@ -53,6 +53,6 @@ export const menuTriggeredSetCodemap = (window: BrowserWindow) => {
   window.webContents.send('set-codemap', menuState.checkedCodeMap);
 };
 
-export const menuTriggeredEditorCopy = (window: BrowserWindow) => {
+export const menuTriggeredEditorCopy = (_window: BrowserWindow) => {
   console.log('tirgle copy')
 };

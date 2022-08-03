@@ -6,7 +6,11 @@ import {
   MenuItemConstructorOptions,
   shell,
 } from 'electron';
-import { menuTriggeredEditorCopy, menuTriggeredOpenFile, menuTriggeredSaveFile } from './menuTriggers';
+import {
+  menuTriggeredEditorCopy,
+  menuTriggeredOpenFile,
+  menuTriggeredSaveFile,
+} from './menuTriggers';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -42,7 +46,7 @@ export default class MenuBuilder {
       process.platform === 'darwin'
         ? this.buildDarwinTemplate()
         : this.buildDefaultTemplate();
-    // @ts-ignore
+
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
 
@@ -204,8 +208,8 @@ export default class MenuBuilder {
     return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
   }
 
-  buildDefaultTemplate() {
-    const templateDefault = [
+  buildDefaultTemplate(): MenuItemConstructorOptions[] {
+    const templateDefault: MenuItemConstructorOptions[] = [
       {
         label: '&File',
         submenu: [
@@ -263,9 +267,9 @@ export default class MenuBuilder {
           {
             label: '&Copy',
             accelerator: 'Ctrl+C',
-            click:()=>{
+            click: () => {
               menuTriggeredEditorCopy(this.mainWindow);
-            }
+            },
           },
           {
             label: '&Cut',
@@ -301,9 +305,7 @@ export default class MenuBuilder {
           {
             label: '&Start',
             accelerator: 'Ctrl+O',
-            click:()=>{
-
-            }
+            click: () => {},
           },
           {
             label: '&Build',
@@ -371,36 +373,32 @@ export default class MenuBuilder {
           },
         ],
       },
-      process.env.NODE_ENV === 'development'
-        ? {
-            label: '&_Development',
-            submenu: [
-              {
-                label: '&Reload',
-                accelerator: 'Ctrl+R',
-                click: () => {
-                  this.mainWindow.webContents.reload();
-                },
-              },
-              {
-                label: 'Toggle &Full Screen',
-                accelerator: 'F11',
-                click: () => {
-                  this.mainWindow.setFullScreen(
-                    !this.mainWindow.isFullScreen()
-                  );
-                },
-              },
-              {
-                label: 'Toggle &Developer Tools',
-                accelerator: 'Alt+Ctrl+I',
-                click: () => {
-                  this.mainWindow.webContents.toggleDevTools();
-                },
-              },
-            ],
-          }
-        : undefined!,
+      {
+        label: '&_Development',
+        submenu: [
+          {
+            label: '&Reload',
+            accelerator: 'Ctrl+R',
+            click: () => {
+              this.mainWindow.webContents.reload();
+            },
+          },
+          {
+            label: 'Toggle &Full Screen',
+            accelerator: 'F11',
+            click: () => {
+              this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
+            },
+          },
+          {
+            label: 'Toggle &Developer Tools',
+            accelerator: 'Alt+Ctrl+I',
+            click: () => {
+              this.mainWindow.webContents.toggleDevTools();
+            },
+          },
+        ],
+      },
     ];
 
     return templateDefault;

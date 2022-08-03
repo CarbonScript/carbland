@@ -18,7 +18,10 @@ export const MainBroad = () => {
     });
 
     window.electron.ipcRenderer.on('fetch-editor', () => {
-      window.electron.ipcRenderer.sendMessage('give-editor',editor?.getValue());
+      window.electron.ipcRenderer.sendMessage(
+        'give-editor',
+        editor?.getValue()
+      );
     });
   });
 
@@ -30,10 +33,7 @@ export const MainBroad = () => {
         backgroundColor: 'black',
       }}
     >
-      <div
-        className=""
-        style={{ height: 'calc(100vh - 22px)', width: '100vw' }}
-      >
+      <div style={{ height: 'calc(100vh - 22px)', width: '100vw' }}>
         <CodeEditor />
       </div>
       <div style={{ height: '22px' }}>
