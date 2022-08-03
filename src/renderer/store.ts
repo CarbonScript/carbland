@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import CodeEditorSlice from './slice/CodeEditorSlice';
+import FileWorkSlice from './slice/FileWorkSlice';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -13,11 +14,11 @@ export const store = configureStore({
          */
         ignoredActions: ['codeEditor/initEditor'],
         ignoredPaths: ['codeEditor.editorInstance'],
-        
       },
     }),
   reducer: {
     codeEditor: CodeEditorSlice,
+    fileWork: FileWorkSlice,
   },
 });
 

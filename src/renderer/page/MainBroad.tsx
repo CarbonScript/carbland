@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import CodeEditor from 'renderer/component/CodeEditor';
 import { StatusBar } from 'renderer/component/StatusBar';
 import { useAppSelector } from 'renderer/hook/redux-hooks';

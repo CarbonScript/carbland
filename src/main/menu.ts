@@ -6,7 +6,7 @@ import {
   MenuItemConstructorOptions,
   shell,
 } from 'electron';
-import { menuTriggeredOpenFile, menuTriggeredSaveFile } from './menuTriggers';
+import { menuTriggeredEditorCopy, menuTriggeredOpenFile, menuTriggeredSaveFile } from './menuTriggers';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -263,6 +263,9 @@ export default class MenuBuilder {
           {
             label: '&Copy',
             accelerator: 'Ctrl+C',
+            click:()=>{
+              menuTriggeredEditorCopy(this.mainWindow);
+            }
           },
           {
             label: '&Cut',
@@ -298,6 +301,9 @@ export default class MenuBuilder {
           {
             label: '&Start',
             accelerator: 'Ctrl+O',
+            click:()=>{
+
+            }
           },
           {
             label: '&Build',
@@ -352,7 +358,8 @@ export default class MenuBuilder {
 
               Carbland Version: 1.0.0
               Complier Version: 0.2.0
-              
+
+              Powered by Electron & React
               `;
               dialog.showMessageBox({
                 title: 'About Carbland',
