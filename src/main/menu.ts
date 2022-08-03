@@ -1,13 +1,6 @@
 import {
-  app,
-  Menu,
-  shell,
-  BrowserWindow,
-  MenuItemConstructorOptions,
-  dialog,
-  ipcRenderer,
+  app, BrowserWindow, dialog, Menu, MenuItemConstructorOptions, shell
 } from 'electron';
-import fs from 'fs';
 import { menuTriggedOpenFile, menuTriggedSaveFile } from './menuAction';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
@@ -228,7 +221,7 @@ export default class MenuBuilder {
             label: 'Save Project',
             accelerator: 'Ctrl+S',
             click:()=>{
-                menuTriggedSaveFile(this.mainWindow)
+                menuTriggedSaveFile(this.mainWindow);
             }
           },
           {

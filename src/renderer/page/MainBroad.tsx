@@ -1,19 +1,19 @@
 import CodeEditor from 'renderer/component/CodeEditor';
 import { StatusBar } from 'renderer/component/StatusBar';
 import { useAppDispatch, useAppSelector } from 'renderer/hooks';
-import { selectCode, writeIn } from 'renderer/slice/CodeEditorSlice';
+import { selectEditor, writeIn } from 'renderer/slice/CodeEditorSlice';
 
 export const MainBroad = () => {
-  const code = useAppSelector(selectCode);
+  const editor = useAppSelector(selectEditor);
   const dispatchCode = useAppDispatch();
   // Receive the icp message.
   window.electron.ipcRenderer.on('open-file', (value: string) => {
-    dispatchCode(writeIn(value));
-    console.log(value);
+    dispatchCode( writeIn(value));
+    console.log('read:',value);
   });
 
   window.electron.ipcRenderer.on('fetch-editor', () => {
-    window.electron.ipcRenderer.sendMessage('give-editor', code);
+    window.electron.ipcRenderer.sendMessage('give-editor', editor?.getModel()?.getValue());
   });
 
   return (

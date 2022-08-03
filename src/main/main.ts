@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { CodeEditorState } from 'renderer/slice/CodeEditorSlice';
 
 class AppUpdater {
   constructor() {
@@ -31,10 +32,9 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.on('give-editor',(event,args)=>{
-  // console.log(args);
-})
-
+ipcMain.on('give-editor', (_event, args: CodeEditorState) => {
+  console.log('rec:',args);
+});
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -140,5 +140,3 @@ app
     });
   })
   .catch(console.log);
-
-  

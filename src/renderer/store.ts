@@ -3,8 +3,19 @@ import CodeEditorSlice from './slice/CodeEditorSlice';
 // ...
 
 export const store = configureStore({
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these action types
+        ignoredActions: ['codeEditor/initEditor'],
+        // Ignore these field paths in all actions
+        ignoredActionPaths: ['meta.arg', 'payload.timestamp'],
+        // Ignore these paths in the state
+        ignoredPaths: ['codeEditor.editor'],
+      },
+    }),
   reducer: {
-    codeEditor:CodeEditorSlice
+    codeEditor: CodeEditorSlice,
   },
 });
 

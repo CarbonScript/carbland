@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog, ipcRenderer } from 'electron';
+import { BrowserWindow, dialog } from 'electron';
 import fs from 'fs';
 
 export const menuTriggedOpenFile = (window: BrowserWindow) => {
@@ -19,7 +19,7 @@ export const menuTriggedOpenFile = (window: BrowserWindow) => {
     });
 };
 
-export const menuTriggedNewFile = (window: BrowserWindow) => {};
+export const menuTriggedNewFile = (_window: BrowserWindow) => {};
 
 export const menuTriggedSaveFile = (window: BrowserWindow) => {
     window.webContents.send('fetch-editor');

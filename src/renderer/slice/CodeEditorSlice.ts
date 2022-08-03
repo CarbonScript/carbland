@@ -1,32 +1,46 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { editor } from 'monaco-editor';
 import type { RootState } from '../store';
 
 // Define a type for the slice state
 export interface CodeEditorState {
-  value: string;
+  editor: editor.IStandaloneCodeEditor | null | undefined;
 }
 
 // Define the initial state using that type
 const initialState: CodeEditorState = {
-  value: 'Initail code',
+  editor: null,
 };
 
+// Create the editor state.
 export const CodeEditorSlice = createSlice({
   name: 'codeEditor',
   initialState,
   reducers: {
+    initEditor: (_state: CodeEditorState, action) => {
+      return {
+        editor: editor.create(action.payload!, {
+          scrollBeyondLastLine: false,
+          automaticLayout: true,
+          theme: 'vs-dark',
+          language: 'typescript',
+          minimap: {
+            enabled: true,
+          },
+          value: '',
+          fontFamily: 'consolas,Microsoft YaHei',
+        }),
+      };
+    },
     writeIn: (state: CodeEditorState, action) => {
-      return { ...state, value: action.payload };
-    },
-    cleanEditor: (state: CodeEditorState) => {
-      return { ...state, value: '' };
-    },
+      state.editor?.getModel()?.setValue(action.payload);
+    }
   },
 });
 
-export const { cleanEditor, writeIn } = CodeEditorSlice.actions;
+export const { initEditor, writeIn } = CodeEditorSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
-export const selectCode = (state: RootState) => state.codeEditor.value;
+export const selectEditor = (state: RootState) => state.codeEditor.editor;
 
 export default CodeEditorSlice.reducer;
