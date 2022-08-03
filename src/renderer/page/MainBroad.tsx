@@ -9,6 +9,8 @@ export const MainBroad = () => {
   const editor = useAppSelector(selectEditor);
 
   useEffect(() => {
+    window.electron.ipcRenderer.removeAllListeners('fetch-editor');
+    window.electron.ipcRenderer.removeAllListeners('give-editor');
     // Receive the icp message.
     window.electron.ipcRenderer.on('open-file', (value: string) => {
       editor?.setValue(value);
@@ -16,19 +18,9 @@ export const MainBroad = () => {
     });
 
     window.electron.ipcRenderer.on('fetch-editor', () => {
-      window.electron.ipcRenderer.sendMessage(
-        'give-editor',
-        editor?.getValue()
-      );
-      console.log('b', editor?.getValue());
+      window.electron.ipcRenderer.sendMessage('give-editor',editor?.getValue());
     });
-
-    return () => {
-      console.log('cleaned')
-      window.electron.ipcRenderer.removeAllListeners('fetch-editor');
-      window.electron.ipcRenderer.removeAllListeners('give-editor');
-    };
-  }, []);
+  });
 
   return (
     <div
