@@ -32,13 +32,13 @@ export const CodeEditorSlice = createSlice({
         }),
       };
     },
-    writeIn: (state: CodeEditorState, action) => {
-      state.editor?.getModel()?.setValue(action.payload);
-    }
+    // writeIn: (state: CodeEditorState, action) => {
+    //   state.editor?.getModel()?.setValue(action.payload);
+    // }
   },
 });
 
-export const { initEditor, writeIn } = CodeEditorSlice.actions;
+export const { initEditor } = CodeEditorSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectEditor = (state: RootState) => state.codeEditor.editor;
