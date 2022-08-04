@@ -3,6 +3,7 @@ import App from './App';
 import "@arco-design/web-react/dist/css/arco.css";
 import {store} from './store';
 import { Provider } from 'react-redux';
+import "tailwindcss/tailwind.css";
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);

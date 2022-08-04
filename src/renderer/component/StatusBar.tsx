@@ -10,7 +10,7 @@ export const StatusBar = (props: { text?: string }) => {
         userSelect: 'none',
       }}
     >
-      <span style={{ color: 'white', margin: 'auto 0px' }}>{props.text}</span>
+      <span className=" tw-text-white tw-my-auto">{props.text}</span>
     </div>
   );
 };

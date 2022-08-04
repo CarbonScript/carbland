@@ -51,7 +51,6 @@ const configuration: webpack.Configuration = {
     `webpack-dev-server/client?http://localhost:${port}/dist`,
     'webpack/hot/only-dev-server',
     path.join(webpackPaths.srcRendererPath, 'index.tsx'),
-    
   ],
 
   output: {
@@ -67,7 +66,7 @@ const configuration: webpack.Configuration = {
     rules: [
       {
         test: /\.node$/,
-        loader: "node-loader",
+        loader: 'node-loader',
       },
       {
         test: /\.s?css$/,
@@ -87,7 +86,19 @@ const configuration: webpack.Configuration = {
       },
       {
         test: /\.s?css$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [require('tailwindcss'), require('autoprefixer')],
+              },
+            },
+          },
+        ],
         exclude: /\.module\.s?(c|a)ss$/,
       },
       // Fonts
