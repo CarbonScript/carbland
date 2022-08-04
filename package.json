@@ -114,6 +114,7 @@
     "@swc/core": "^1.2.220",
     "@swc/wasm": "^1.2.220",
     "ahooks": "^3.6.2",
+    "classnames": "^2.3.1",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.7",
     "electron-updater": "^5.0.3",
