@@ -8,6 +8,8 @@ import { initEditor } from 'renderer/slice/CodeEditorSlice';
  * *** WARNING ***
  *
  * This component can only be used once in React.
+ * Likewise, the parent component that uses this component,
+ * as well as the higher-level ancestor component, can only be called once in React.
  * Because the instance it mounts is only stored in one redux-store.
  * If this component is reused multiple times, it will cause repeated mounting,
  * which will lead to unpredictable consequences

@@ -15,24 +15,31 @@ import type { RootState } from '../store';
 // Define a type for the slice state
 export interface CodeEditorState {
   editorInstance: editor.IStandaloneCodeEditor | null;
-  editorOption: editor.IStandaloneEditorConstructionOptions | undefined;
+  editorOptions: editor.IStandaloneEditorConstructionOptions | undefined;
 }
 
+// Action to init editor.
 export interface InitEditorAction {
   type: string;
   payload: HTMLDivElement | null;
 }
 
+//Action to destroy editor
+export interface DestroyEditorAction {
+  type: string;
+  payload: undefined;
+}
+
 // Define the initial editor state.
 const initialState: CodeEditorState = {
   editorInstance: null,
-  editorOption: {},
+  editorOptions: undefined,
 };
 
 // Default options for editor
 // For more options, documentation is here
 // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneEditorConstructionOptions.html
-const defaultEditorOption: editor.IStandaloneEditorConstructionOptions = {
+export const defaultEditorOption: editor.IStandaloneEditorConstructionOptions = {
   scrollBeyondLastLine: false,
   automaticLayout: true,
   theme: 'vs-dark',
@@ -44,22 +51,28 @@ const defaultEditorOption: editor.IStandaloneEditorConstructionOptions = {
   fontFamily: 'consolas,Microsoft YaHei',
 };
 
-// Create the editor state.
+// Create the editor slice.
 export const CodeEditorSlice = createSlice({
   name: 'codeEditor',
   initialState,
   reducers: {
     initEditor: (_state: CodeEditorState, action: InitEditorAction) => {
-      console.log(action);
       return {
         editorInstance: editor.create(action.payload!, defaultEditorOption),
-        editorOption: defaultEditorOption,
+        editorOptions: defaultEditorOption,
+      };
+    },
+    destroyEditor: (state: CodeEditorState, _action: DestroyEditorAction) => {
+      state.editorInstance?.dispose();
+      return {
+        editorInstance: null,
+        editorOptions: undefined,
       };
     },
   },
 });
 
-export const { initEditor } = CodeEditorSlice.actions;
+export const { initEditor, destroyEditor } = CodeEditorSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectEditor = (state: RootState) => {

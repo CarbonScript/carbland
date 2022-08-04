@@ -51,6 +51,9 @@ export const FileWorkSlice = createSlice({
   },
 });
 
+/**
+ * Export actions in FileWorkSlice.
+ */
 export const { setFilePath: setFileName, setFileSaveState: setFileSave } =
   FileWorkSlice.actions;
 

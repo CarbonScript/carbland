@@ -48,7 +48,7 @@ export const menuTriggeredNewFile = (_window: BrowserWindow) => {};
  * @param window Allows the dialog to attach itself to a parent window, making it modal.
  */
 export const menuTriggeredSaveFile = (window: BrowserWindow) => {
-  window.webContents.send('fetch-code');
+  window.webContents.send('fetch-code-to-save');
 };
 
 /**
