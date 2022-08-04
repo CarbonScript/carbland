@@ -1,17 +1,9 @@
-import colors from 'tailwindcss/colors';
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/renderer/**/*.{js,jsx,ts,tsx,ejs}'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: false,
   prefix: 'tw-',
-  theme: {
-    extend: {
-      colors: {
-        sky: colors.sky,
-        cyan: colors.cyan,
-      },
-    },
-  },
   variants: {
     extend: {},
   },

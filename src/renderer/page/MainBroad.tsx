@@ -27,6 +27,7 @@ export const MainBroad = () => {
 
   return (
     <div
+      className=""
       style={{
         height: '100vh',
         width: '100vw',
