@@ -36,7 +36,7 @@ const IS_DEBUG_MODE =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 /**
- * Used to store the state of the menu. 
+ * Used to store the state of the menu.
  * Such as selected menu, available menu items, etc.
  */
 export const menuState: MenuState = {
@@ -252,7 +252,6 @@ export default class MenuBuilder {
    * @memberof MenuBuilder
    */
   buildDefaultTemplate(): MenuItemConstructorOptions[] {
-
     const FileMenu: MenuItemConstructorOptions = {
       label: '&File',
       submenu: [
@@ -333,6 +332,14 @@ export default class MenuBuilder {
         {
           label: '&Replace in File',
           accelerator: 'Ctrl+Shift+R',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: '&Auto wrap',
+          type : 'checkbox',
+          accelerator: 'Ctrl+Shift+W',
         },
         {
           type: 'separator',

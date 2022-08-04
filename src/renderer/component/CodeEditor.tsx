@@ -4,9 +4,9 @@ import { initEditor } from 'renderer/slice/CodeEditorSlice';
 
 /**
  * Return the code editor instance mounted on div element.
- * 
- * *** WARNING *** 
- * 
+ *
+ * *** WARNING ***
+ *
  * This component can only be used once in React.
  * Because the instance it mounts is only stored in one redux-store.
  * If this component is reused multiple times, it will cause repeated mounting,
@@ -24,7 +24,7 @@ const CodeEditor = () => {
     dispatchCode(initEditor(dom_ref.current));
   }, []);
 
-  return <div style={{ height: '100%', width: '100%' }} ref={dom_ref} />;
+  return <div className=" tw-h-full tw-w-full" ref={dom_ref} />;
 };
 
 export default CodeEditor;

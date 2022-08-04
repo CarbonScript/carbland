@@ -4,6 +4,7 @@ import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { resolveHtmlPath } from './util';
+import { RegistryICPListener } from './icp';
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 /**
@@ -35,7 +36,11 @@ class AppUpdater {
   }
 }
 
-let mainWindow: BrowserWindow | null = null;
+/**
+ * Export only main window. All program interface processes 
+ * can only be performed in this main window.
+ */
+export let mainWindow: BrowserWindow | null = null;
 
 /**
  * In process production mode
@@ -148,5 +153,6 @@ app
       if (mainWindow === null) createWindow();
       console.log('The process is startup...');
     });
+    RegistryICPListener();
   })
   .catch(console.log);

@@ -9,31 +9,32 @@ export const MainBroad = () => {
   const editor = useAppSelector(selectEditor);
 
   useEffect(() => {
-    window.electron.ipcRenderer.removeAllListeners('fetch-editor');
-    window.electron.ipcRenderer.removeAllListeners('give-editor');
-    // Receive the icp message.
+    /**
+     * *** WARNING ***
+     * Every time the component is re-rendered,
+     * in order to ensure that the instance obtained from the store is up-to-date,
+     * the listener must be reset. However, the same channel of the icpMain listener will not be overwritten,
+     * so before resetting the listener, remove all previous listeners.
+     */
+
+    window.electron.ipcRenderer.removeAllListeners('fetch-code');
+    window.electron.ipcRenderer.removeAllListeners('save-file');
+
     window.electron.ipcRenderer.on('open-file', (value: string) => {
       editor?.setValue(value);
       console.log('read:', value);
     });
 
-    window.electron.ipcRenderer.on('fetch-editor', () => {
+    window.electron.ipcRenderer.on('fetch-code', () => {
       window.electron.ipcRenderer.sendMessage(
-        'give-editor',
+        'save-file',
         editor?.getValue()
       );
     });
   });
 
   return (
-    <div
-      className=""
-      style={{
-        height: '100vh',
-        width: '100vw',
-        backgroundColor: 'black',
-      }}
-    >
+    <div className="tw-h-screen tw-w-screen tw-bg-gray-800">
       <div style={{ height: 'calc(100vh - 22px)', width: '100vw' }}>
         <CodeEditor />
       </div>
