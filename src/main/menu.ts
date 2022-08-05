@@ -10,6 +10,7 @@ import {
   menuTriggeredEditorCopy,
   menuTriggeredOpenFile,
   menuTriggeredSaveFile,
+  menuTriggeredSetCodemap,
 } from './menu-triggers';
 
 /**
@@ -374,7 +375,7 @@ export default class MenuBuilder {
           accelerator: 'Ctrl+R',
           type: 'checkbox',
           checked: menuState.checkedCodeMap,
-          click: () => {},
+          click: () => {menuTriggeredSetCodemap(this.mainWindow)},
         },
         {
           label: 'Toggle &Full Screen',

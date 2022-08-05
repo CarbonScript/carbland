@@ -13,7 +13,7 @@ export const store = configureStore({
          *   So you need to configure redux to ignore the serialization check for editor instance
          */
         ignoredActions: ['codeEditor/initEditor'],
-        ignoredPaths: ['codeEditor.editorInstance'],
+        ignoredPaths: ['codeEditor'],
       },
     }),
   reducer: {

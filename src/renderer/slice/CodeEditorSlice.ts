@@ -21,7 +21,10 @@ export interface CodeEditorState {
 // Action to init editor.
 export interface InitEditorAction {
   type: string;
-  payload: HTMLDivElement | null;
+  payload: {
+    domRef: HTMLDivElement | null;
+    options: editor.IStandaloneEditorConstructionOptions;
+  };
 }
 
 //Action to destroy editor
@@ -39,17 +42,18 @@ const initialState: CodeEditorState = {
 // Default options for editor
 // For more options, documentation is here
 // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneEditorConstructionOptions.html
-export const defaultEditorOption: editor.IStandaloneEditorConstructionOptions = {
-  scrollBeyondLastLine: false,
-  automaticLayout: true,
-  theme: 'vs-dark',
-  language: 'typescript',
-  minimap: {
-    enabled: true,
-  },
-  value: '',
-  fontFamily: 'consolas,Microsoft YaHei',
-};
+export const defaultEditorOption: editor.IStandaloneEditorConstructionOptions =
+  {
+    scrollBeyondLastLine: false,
+    automaticLayout: true,
+    theme: 'vs-dark',
+    language: 'typescript',
+    minimap: {
+      enabled: true,
+    },
+    value: '',
+    fontFamily: 'consolas,Microsoft YaHei',
+  };
 
 // Create the editor slice.
 export const CodeEditorSlice = createSlice({
@@ -58,8 +62,11 @@ export const CodeEditorSlice = createSlice({
   reducers: {
     initEditor: (_state: CodeEditorState, action: InitEditorAction) => {
       return {
-        editorInstance: editor.create(action.payload!, defaultEditorOption),
-        editorOptions: defaultEditorOption,
+        editorInstance: editor.create(
+          action.payload.domRef!,
+          action.payload.options
+        ),
+        editorOptions: action.payload.options,
       };
     },
     destroyEditor: (state: CodeEditorState, _action: DestroyEditorAction) => {

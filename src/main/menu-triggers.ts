@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { BrowserWindow, dialog } from 'electron';
 import { menuState } from './menu';
-import { CHANNEL_FETCH_CODE_TO_SAVE, CHANNEL_OPEN_FILE } from './main-channels';
+import { CHANNEL_FETCH_CODE_TO_SAVE, CHANNEL_OPEN_FILE, CHANNEL_SET_CODEMAP } from './main-channels';
 
 /**
  * menu-trigger.ts
@@ -57,9 +57,8 @@ export const menuTriggeredSaveFile = (window: BrowserWindow) => {
  * @param window Allows the dialog to attach itself to a parent window, making it modal.
  */
 export const menuTriggeredSetCodemap = (window: BrowserWindow) => {
-  menuState.checkedCodeMap = menuState.checkedCodeMap;
-  console.log(menuState.checkedCodeMap);
-  window.webContents.send('set-codemap', menuState.checkedCodeMap);
+  menuState.checkedCodeMap = !menuState.checkedCodeMap;
+  window.webContents.send(CHANNEL_SET_CODEMAP, menuState.checkedCodeMap);
 };
 
 export const menuTriggeredEditorCopy = (_window: BrowserWindow) => {
