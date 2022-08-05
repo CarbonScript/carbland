@@ -85,7 +85,7 @@ const CodeEditor = () => {
      * transmit the content in the editor to the main process by the channel that saves the action
      */
     window.electron.ipcRenderer.on(CHANNEL_FETCH_CODE_TO_SAVE, () => {
-      window.electron.ipcRenderer.sendMessage(
+      window.electron.ipcRenderer.send(
         CHANNEL_SAVE_FILE,
         selectEditorInstance?.getValue()
       );
