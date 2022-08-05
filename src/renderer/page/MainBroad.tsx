@@ -1,4 +1,9 @@
 import { useEffect } from 'react';
+import {
+  CHANNEL_FETCH_CODE_TO_SAVE,
+  CHANNEL_OPEN_FILE,
+  CHANNEL_SAVE_FILE,
+} from 'renderer/renderer-channels';
 import CodeEditor from 'renderer/component/CodeEditor';
 import { StatusBar } from 'renderer/component/StatusBar';
 import { useAppSelector } from 'renderer/hook/redux-hooks';
@@ -22,8 +27,8 @@ export const MainBroad = () => {
 
   // This function is used to remove the listener to avoid repeated monitoring
   const removeListeners = () => {
-    window.electron.ipcRenderer.removeAllListeners('fetch-code-to-save');
-    window.electron.ipcRenderer.removeAllListeners('save-file');
+    window.electron.ipcRenderer.removeAllListeners(CHANNEL_FETCH_CODE_TO_SAVE);
+    window.electron.ipcRenderer.removeAllListeners(CHANNEL_SAVE_FILE);
   };
 
   useEffect(() => {
@@ -34,7 +39,7 @@ export const MainBroad = () => {
      * After receiving the channel information for the open file,
      * stream the string into the editor.
      */
-    window.electron.ipcRenderer.on('open-file', (value: string) => {
+    window.electron.ipcRenderer.on(CHANNEL_OPEN_FILE, (value: string) => {
       selectEditorInstance?.setValue(value);
     });
 
@@ -42,9 +47,9 @@ export const MainBroad = () => {
      * After receiving the channel signal to get the code,
      * transmit the content in the editor to the main process by the channel that saves the action
      */
-    window.electron.ipcRenderer.on('fetch-code-to-save', () => {
+    window.electron.ipcRenderer.on(CHANNEL_FETCH_CODE_TO_SAVE, () => {
       window.electron.ipcRenderer.sendMessage(
-        'save-file',
+        CHANNEL_SAVE_FILE,
         selectEditorInstance?.getValue()
       );
     });
