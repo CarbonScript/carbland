@@ -7,7 +7,6 @@ import {
   shell,
 } from 'electron';
 import {
-  menuTriggeredEditorCopy,
   menuTriggeredOpenFile,
   menuTriggeredSaveFile,
   menuTriggeredSetCodemap,
@@ -311,9 +310,6 @@ export default class MenuBuilder {
         {
           label: '&Copy',
           accelerator: 'Ctrl+C',
-          click: () => {
-            menuTriggeredEditorCopy(this.mainWindow);
-          },
         },
         {
           label: '&Cut',

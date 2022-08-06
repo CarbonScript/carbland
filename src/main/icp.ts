@@ -1,6 +1,6 @@
 import { dialog, ipcMain } from 'electron';
 import fs from 'fs';
-import { CHANNEL_ICP_EXAMPLE, CHANNEL_SAVE_FILE } from './main-channels';
+import { MainChannels } from './main-channels';
 import { mainWindow } from './main';
 
 /**
@@ -11,21 +11,21 @@ import { mainWindow } from './main';
  * @export
  */
 export function RegistryICPListener() {
-  ipcMain.on(CHANNEL_ICP_EXAMPLE, async (event, arg) => {
+  ipcMain.on(MainChannels.ICP_EXAMPLE, async (event, arg) => {
     const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
     console.log(msgTemplate(arg));
-    event.reply(CHANNEL_ICP_EXAMPLE, msgTemplate('pong'));
+    event.reply(MainChannels.ICP_EXAMPLE, msgTemplate('pong'));
   });
 
   /**
    * Listening the channel of the saving file.
    */
-  ipcMain.on(CHANNEL_SAVE_FILE, (_event, code: string) => {
+  ipcMain.on(MainChannels.SAVE_FILE, (_event, code: string) => {
     dialog
       .showSaveDialog(mainWindow!, {
         title: 'Save your file',
         filters: [
-          { name: 'TypeScript File', extensions: ['ts'] },
+          { name: 'plain-text', extensions: ['txt'] },
           { name: 'All Files', extensions: ['*'] },
         ],
       })

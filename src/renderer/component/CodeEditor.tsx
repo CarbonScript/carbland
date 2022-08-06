@@ -1,12 +1,7 @@
 import { editor } from 'monaco-editor';
 import { useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from 'renderer/hook/redux-hooks';
-import {
-  CHANNEL_FETCH_CODE_TO_SAVE,
-  CHANNEL_OPEN_FILE,
-  CHANNEL_SAVE_FILE,
-  CHANNEL_SET_CODEMAP,
-} from 'renderer/renderer-channels';
+import { RendererChannels } from 'renderer/renderer-channels';
 import { initEditor, selectEditor } from 'renderer/slice/CodeEditorSlice';
 
 // Default options for editor
@@ -43,9 +38,13 @@ const CodeEditor = () => {
   const dom_ref = useRef<HTMLDivElement | null>(null);
 
   const removeListeners = () => {
-    window.electron.ipcRenderer.removeAllListeners(CHANNEL_FETCH_CODE_TO_SAVE);
-    window.electron.ipcRenderer.removeAllListeners(CHANNEL_SAVE_FILE);
-    window.electron.ipcRenderer.removeAllListeners(CHANNEL_SET_CODEMAP);
+    window.electron.ipcRenderer.removeAllListeners(
+      RendererChannels.FETCH_CODE_TO_SAVE
+    );
+    window.electron.ipcRenderer.removeAllListeners(RendererChannels.SAVE_FILE);
+    window.electron.ipcRenderer.removeAllListeners(
+      RendererChannels.SET_CODEMAP
+    );
   };
 
   // Code dispatcher
@@ -69,24 +68,30 @@ const CodeEditor = () => {
     /**
      * Listener for setting codemap.
      */
-    window.electron.ipcRenderer.on(CHANNEL_SET_CODEMAP, (toggle: boolean) => {
-      selectEditorInstance?.updateOptions({ minimap: { enabled: toggle } });
-    });
+    window.electron.ipcRenderer.on(
+      RendererChannels.SET_CODEMAP,
+      (toggle: boolean) => {
+        selectEditorInstance?.updateOptions({ minimap: { enabled: toggle } });
+      }
+    );
     /**
      * After receiving the channel information for the open file,
      * stream the string into the editor.
      */
-    window.electron.ipcRenderer.on(CHANNEL_OPEN_FILE, (value: string) => {
-      selectEditorInstance?.setValue(value);
-    });
+    window.electron.ipcRenderer.on(
+      RendererChannels.OPEN_FILE,
+      (value: string) => {
+        selectEditorInstance?.setValue(value);
+      }
+    );
 
     /**
      * After receiving the channel signal to get the code,
      * transmit the content in the editor to the main process by the channel that saves the action
      */
-    window.electron.ipcRenderer.on(CHANNEL_FETCH_CODE_TO_SAVE, () => {
+    window.electron.ipcRenderer.on(RendererChannels.FETCH_CODE_TO_SAVE, () => {
       window.electron.ipcRenderer.send(
-        CHANNEL_SAVE_FILE,
+        RendererChannels.SAVE_FILE,
         selectEditorInstance?.getValue()
       );
     });

@@ -1,16 +1,15 @@
 import fs from 'fs';
 import { BrowserWindow, dialog } from 'electron';
 import { menuState } from './menu';
-import { CHANNEL_FETCH_CODE_TO_SAVE, CHANNEL_OPEN_FILE, CHANNEL_SET_CODEMAP } from './main-channels';
+import { MainChannels } from './main-channels';
 
 /**
  * menu-trigger.ts
  * Here is used to define the window menu trigger.
  * Mainly for the processing of click events
- * 
- * Author: Yuteng Zhang   
+ *
+ * Author: Yuteng Zhang
  */
-
 
 /**
  * Open file action triggered by menu.
@@ -20,14 +19,11 @@ export const menuTriggeredOpenFile = (window: BrowserWindow) => {
   dialog
     .showOpenDialog(window, {
       title: 'Open File',
-      filters: [
-        { name: 'JavaScript File', extensions: ['js'] },
-        { name: 'All Files', extensions: ['*'] },
-      ],
+      filters: [{ name: 'All Files', extensions: ['*'] }],
     })
     .then((data) => {
       fs.readFile(data.filePaths[0], 'utf-8', (_err, data) => {
-        window.webContents.send(CHANNEL_OPEN_FILE, data);
+        window.webContents.send(MainChannels.OPEN_FILE, data);
       });
     })
     .catch((err) => {
@@ -49,7 +45,15 @@ export const menuTriggeredNewFile = (_window: BrowserWindow) => {};
  * @param window Allows the dialog to attach itself to a parent window, making it modal.
  */
 export const menuTriggeredSaveFile = (window: BrowserWindow) => {
-  window.webContents.send(CHANNEL_FETCH_CODE_TO_SAVE);
+  window.webContents.send(MainChannels.FETCH_CODE_TO_SAVE);
+};
+
+/**
+ * Save as file action triggered by menu.
+ * @param window Allows the dialog to attach itself to a parent window, making it modal.
+ */
+export const menuTriggeredSaveAsFile = (window: BrowserWindow) => {
+  window.webContents.send(MainChannels.FETCH_CODE_TO_SAVE_AS);
 };
 
 /**
@@ -58,9 +62,5 @@ export const menuTriggeredSaveFile = (window: BrowserWindow) => {
  */
 export const menuTriggeredSetCodemap = (window: BrowserWindow) => {
   menuState.checkedCodeMap = !menuState.checkedCodeMap;
-  window.webContents.send(CHANNEL_SET_CODEMAP, menuState.checkedCodeMap);
-};
-
-export const menuTriggeredEditorCopy = (_window: BrowserWindow) => {
-  console.log('tirgle copy')
+  window.webContents.send(MainChannels.SET_CODEMAP, menuState.checkedCodeMap);
 };
