@@ -14,7 +14,7 @@ import { RegistryICPListener } from './icp';
  *
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
- * 
+ *
  * Author: Yuteng Zhang
  */
 
@@ -37,7 +37,7 @@ class AppUpdater {
 }
 
 /**
- * Export only main window. All program interface processes 
+ * Export only main window. All program interface processes
  * can only be performed in this main window.
  */
 export let mainWindow: BrowserWindow | null = null;
@@ -90,8 +90,8 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 728,
-    minHeight:500,
-    minWidth:500,
+    minHeight: 500,
+    minWidth: 500,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged

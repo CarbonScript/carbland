@@ -47,7 +47,6 @@ export const defaultEditorOption: editor.IStandaloneEditorConstructionOptions =
     scrollBeyondLastLine: false,
     automaticLayout: true,
     theme: 'vs-dark',
-    language: 'typescript',
     minimap: {
       enabled: true,
     },

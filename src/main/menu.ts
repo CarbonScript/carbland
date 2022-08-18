@@ -335,7 +335,7 @@ export default class MenuBuilder {
         },
         {
           label: '&Auto wrap',
-          type : 'checkbox',
+          type: 'checkbox',
           accelerator: 'Ctrl+Shift+W',
         },
         {
@@ -371,7 +371,9 @@ export default class MenuBuilder {
           accelerator: 'Ctrl+R',
           type: 'checkbox',
           checked: menuState.checkedCodeMap,
-          click: () => {menuTriggeredSetCodemap(this.mainWindow)},
+          click: () => {
+            menuTriggeredSetCodemap(this.mainWindow);
+          },
         },
         {
           label: 'Toggle &Full Screen',

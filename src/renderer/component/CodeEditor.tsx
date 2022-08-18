@@ -1,24 +1,23 @@
 import { editor } from 'monaco-editor';
-import { useEffect, useRef } from 'react';
-import { useAppDispatch, useAppSelector } from 'renderer/hook/redux-hooks';
-import { RendererChannels } from 'renderer/renderer-channels';
 import { initEditor, selectEditor } from 'renderer/slice/CodeEditorSlice';
+import { RendererChannels } from 'renderer/renderer-channels';
+import { useAppDispatch, useAppSelector } from 'renderer/hook/redux-hooks';
+import { useEffect, useRef } from 'react';
 
 // Default options for editor
 // For more options, documentation is here
 // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneEditorConstructionOptions.html
 export const defaultEditorOption: editor.IStandaloneEditorConstructionOptions =
-  {
-    scrollBeyondLastLine: false,
-    automaticLayout: true,
-    theme: 'vs-dark',
-    language: 'typescript',
-    minimap: {
-      enabled: true,
-    },
-    value: '',
-    fontFamily: 'consolas,Microsoft YaHei',
-  };
+{
+  scrollBeyondLastLine: false,
+  automaticLayout: true,
+  theme: 'vs-dark',
+  minimap: {
+    enabled: true,
+  },
+  value: '',
+  fontFamily: 'consolas,Microsoft YaHei',
+};
 
 /**
  * Return the code editor instance mounted on div element.
@@ -38,13 +37,9 @@ const CodeEditor = () => {
   const dom_ref = useRef<HTMLDivElement | null>(null);
 
   const removeListeners = () => {
-    window.electron.ipcRenderer.removeAllListeners(
-      RendererChannels.FETCH_CODE_TO_SAVE
-    );
+    window.electron.ipcRenderer.removeAllListeners(RendererChannels.FETCH_CODE_TO_SAVE);
     window.electron.ipcRenderer.removeAllListeners(RendererChannels.SAVE_FILE);
-    window.electron.ipcRenderer.removeAllListeners(
-      RendererChannels.SET_CODEMAP
-    );
+    window.electron.ipcRenderer.removeAllListeners(RendererChannels.SET_CODEMAP);
   };
 
   // Code dispatcher
@@ -55,9 +50,7 @@ const CodeEditor = () => {
 
   useEffect(() => {
     if (selectEditorInstance === null) {
-      dispatchEditor(
-        initEditor({ domRef: dom_ref.current, options: defaultEditorOption })
-      );
+      dispatchEditor(initEditor({ domRef: dom_ref.current, options: defaultEditorOption }));
     }
     selectEditorInstance?.render();
   }, []);
@@ -65,35 +58,35 @@ const CodeEditor = () => {
   useEffect(() => {
     // Clean listeners every renders.
     removeListeners();
+    
     /**
      * Listener for setting codemap.
      */
-    window.electron.ipcRenderer.on(
-      RendererChannels.SET_CODEMAP,
-      (toggle: boolean) => {
-        selectEditorInstance?.updateOptions({ minimap: { enabled: toggle } });
-      }
-    );
+    window.electron.ipcRenderer.on(RendererChannels.SET_CODEMAP, (toggle: boolean) => {
+      selectEditorInstance?.updateOptions({ minimap: { enabled: toggle } });
+    });
+
     /**
      * After receiving the channel information for the open file,
      * stream the string into the editor.
      */
-    window.electron.ipcRenderer.on(
-      RendererChannels.OPEN_FILE,
-      (value: string) => {
-        selectEditorInstance?.setValue(value);
-      }
-    );
+    window.electron.ipcRenderer.on(RendererChannels.OPEN_FILE, (value: string) => {
+      selectEditorInstance?.setValue(value);
+    });
 
     /**
      * After receiving the channel signal to get the code,
      * transmit the content in the editor to the main process by the channel that saves the action
      */
     window.electron.ipcRenderer.on(RendererChannels.FETCH_CODE_TO_SAVE, () => {
-      window.electron.ipcRenderer.send(
-        RendererChannels.SAVE_FILE,
-        selectEditorInstance?.getValue()
-      );
+      window.electron.ipcRenderer.send(RendererChannels.SAVE_FILE, selectEditorInstance?.getValue());
+    });
+
+    /*
+     * 
+     */
+    window.electron.ipcRenderer.on(RendererChannels.FETCH_CODE, () => {
+      return selectEditorInstance?.getValue();
     });
     return removeListeners;
   });
