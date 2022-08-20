@@ -36,7 +36,7 @@ export const FileWorkSlice = createSlice({
      * @param action The dispatched action
      * @returns Returned new state
      */
-    setFilePath: (state: FileWorkState, action: SetFilePathAction) => {
+    setOpenedFilePath: (state: FileWorkState, action: SetFilePathAction) => {
       return { ...state, OpenedFilePath: action.payload };
     },
     /**
@@ -45,7 +45,7 @@ export const FileWorkSlice = createSlice({
      * @param action The dispatched action
      * @returns Returned new state
      */
-    setFileSaveState: (state: FileWorkState, action: SetFileSaveAction) => {
+    setIsSaved: (state: FileWorkState, action: SetFileSaveAction) => {
       return { ...state, isSaved: action.payload };
     },
   },
@@ -54,7 +54,7 @@ export const FileWorkSlice = createSlice({
 /**
  * Export actions in FileWorkSlice.
  */
-export const { setFilePath: setFileName, setFileSaveState: setFileSave } = FileWorkSlice.actions;
+export const { setOpenedFilePath: setFileName, setIsSaved: setFileSave } = FileWorkSlice.actions;
 
 /**
  * Select the path of the opened file.

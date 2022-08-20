@@ -59,6 +59,13 @@ export const CodeEditorSlice = createSlice({
   name: 'codeEditor',
   initialState,
   reducers: {
+    /**
+     * Initializes the state in the code editor, 
+     * which creates a new editor instance based on the options
+     * @param _state The code editor state
+     * @param action The destroy action
+     * @returns return the initial editor state
+     */
     initEditor: (_state: CodeEditorState, action: InitEditorAction) => {
       return {
         editorInstance: editor.create(
@@ -68,6 +75,13 @@ export const CodeEditorSlice = createSlice({
         editorOptions: action.payload.options,
       };
     },
+    
+    /**
+     * Destroy the code editor state in the store
+     * @param state The code editor state
+     * @param _action The destroy action
+     * @returns return the destroyed editor state
+     */
     destroyEditor: (state: CodeEditorState, _action: DestroyEditorAction) => {
       state.editorInstance?.dispose();
       return {
