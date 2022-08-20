@@ -1,6 +1,6 @@
 import { editor } from 'monaco-editor';
 import { initEditor, selectEditor } from 'renderer/slice/CodeEditorSlice';
-import { RendererChannels } from 'renderer/renderer-channels';
+import { RendererChannels } from 'renderer/channels-renderer';
 import { useAppDispatch, useAppSelector } from 'renderer/hook/redux-hooks';
 import { useEffect, useRef } from 'react';
 

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { store } from './store';
 import '@arco-design/web-react/dist/css/arco.css';
 import 'tailwindcss/tailwind.css';
-import { RendererChannels } from './renderer-channels';
+import { RendererChannels } from './channels-renderer';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);

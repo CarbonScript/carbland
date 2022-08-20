@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { BrowserWindow, dialog } from 'electron';
 import { menuState } from './menu';
-import { MainChannels } from './main-channels';
+import { MainChannels } from './channels-main';
 
 /**
  * menu-trigger.ts

@@ -1,6 +1,6 @@
 import { dialog, ipcMain } from 'electron';
 import fs from 'fs';
-import { MainChannels } from './main-channels';
+import { MainChannels } from './channels-main';
 import { mainWindow } from './main';
 
 /**
