@@ -10,7 +10,7 @@ export enum MainChannels {
    */
   FETCH_CODE = 'fetch-code',
   /**
-   * Save the code content that in code-editor into file 
+   * Save the code content that in code-editor into file
    */
   SAVE_FILE = 'save-file',
   /**
@@ -28,4 +28,6 @@ export enum MainChannels {
    * whether to display it or not.
    */
   SET_CODEMAP = 'set-codemap',
+
+  WRITE_IN_FILE = 'write-in-file',
 }

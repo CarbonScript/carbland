@@ -38,4 +38,16 @@ export function RegistryICPListener() {
         console.log(err);
       });
   });
+
+  /**
+   * Listen to the command to write the file,
+   * and after getting the command,
+   * write the file to the specified path
+   */
+  ipcMain.on(
+    MainChannels.WRITE_IN_FILE,
+    (_event, code: string, path: string) => {
+      fs.writeFileSync(path, code);
+    }
+  );
 }

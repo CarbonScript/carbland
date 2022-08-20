@@ -3,6 +3,7 @@ import { initEditor, selectEditor } from 'renderer/slice/CodeEditorSlice';
 import { RendererChannels } from 'renderer/channels-renderer';
 import { useAppDispatch, useAppSelector } from 'renderer/hook/redux-hooks';
 import { useEffect, useRef } from 'react';
+import { selectIsFileSaved } from 'renderer/slice/FileWorkSlice';
 
 // Default options for editor
 // For more options, documentation is here
@@ -48,6 +49,9 @@ const CodeEditor = () => {
   // Hooks the editor instance from redux store.
   const selectEditorInstance = useAppSelector(selectEditor);
 
+  // Hooks the workflow state 
+  const selectIsSaved = useAppSelector(selectIsFileSaved);
+
   useEffect(() => {
     if (selectEditorInstance === null) {
       dispatchEditor(initEditor({ domRef: dom_ref.current, options: defaultEditorOption }));
@@ -76,17 +80,18 @@ const CodeEditor = () => {
 
     /**
      * After receiving the channel signal to get the code,
-     * transmit the content in the editor to the main process by the channel that saves the action
+     * transmit the content in the editor to the main process by the channel that save-as the action
      */
-    window.electron.ipcRenderer.on(RendererChannels.FETCH_CODE_TO_SAVE, () => {
+    window.electron.ipcRenderer.on(RendererChannels.FETCH_CODE_TO_SAVE_AS, () => {
       window.electron.ipcRenderer.send(RendererChannels.SAVE_FILE, selectEditorInstance?.getValue());
     });
 
-    /*
-     * 
+    /**
+     * After receiving the channel signal to get the code,
+     * transmit the content in the editor to the main process by the channel that save action
      */
-    window.electron.ipcRenderer.on(RendererChannels.FETCH_CODE, () => {
-      return selectEditorInstance?.getValue();
+    window.electron.ipcRenderer.on(RendererChannels.FETCH_CODE_TO_SAVE, () => {
+      window.electron.ipcRenderer.send(RendererChannels.SAVE_FILE, selectEditorInstance?.getValue());
     });
     return removeListeners;
   });
