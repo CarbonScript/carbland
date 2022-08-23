@@ -14,9 +14,8 @@ root.render(
   </Provider>
 );
 
-// calling IPC exposed from preload script
+// Test ipc work at start time.
 window.electron.ipcRenderer.once(RendererChannels.ICP_EXAMPLE, (arg) => {
-  // eslint-disable-next-line no-console
   console.log(arg);
 });
 window.electron.ipcRenderer.send(RendererChannels.ICP_EXAMPLE, ['ping']);

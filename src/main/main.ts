@@ -4,7 +4,7 @@ import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { resolveHtmlPath } from './util';
-import { RegistryICPListener } from './icp-listeners';
+import { RegistryICPListener } from './ipc-listeners';
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 /**
