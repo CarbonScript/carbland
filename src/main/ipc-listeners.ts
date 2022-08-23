@@ -11,6 +11,10 @@ import { mainWindow } from './main';
  * @export
  */
 export function RegistryICPListener() {
+
+  /** 
+   * Listen to the channel for work test.
+   */  
   ipcMain.on(MainChannels.ICP_EXAMPLE, async (event, arg) => {
     const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
     console.log(msgTemplate(arg));
@@ -18,7 +22,7 @@ export function RegistryICPListener() {
   });
 
   /**
-   * Listening the channel of the saving file.
+   * Listen to the channel of the saving file.
    */
   ipcMain.on(MainChannels.SAVE_FILE, (_event, code: string) => {
     dialog
