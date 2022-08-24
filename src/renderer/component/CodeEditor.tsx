@@ -1,24 +1,32 @@
 import { editor } from 'monaco-editor';
-import { initEditor, codeEditorSelectEditor } from 'renderer/slice/CodeEditorSlice';
-import { RendererChannels } from 'renderer/channels-renderer';
+import {
+  initEditor,
+  codeEditorSelectEditor,
+} from 'renderer/slice/CodeEditorSlice';
+import { RendererChannels } from '../channels-renderer';
 import { useAppDispatch, useAppSelector } from 'renderer/hook/redux-hooks';
 import { useEffect, useRef } from 'react';
-import { fileWorkSelectIsFileSaved } from 'renderer/slice/FileWorkSlice';
+import {
+  fileWorkSelectIsFileSaved,
+  fileWorkSelectOpenedFilePath,
+  setIsSaved,
+  setOpenedFilePath,
+} from 'renderer/slice/FileWorkSlice';
 
 // Default options for editor
 // For more options, documentation is here
 // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneEditorConstructionOptions.html
 export const defaultEditorOption: editor.IStandaloneEditorConstructionOptions =
-{
-  scrollBeyondLastLine: false,
-  automaticLayout: true,
-  theme: 'vs-dark',
-  minimap: {
-    enabled: true,
-  },
-  value: '',
-  fontFamily: 'consolas,Microsoft YaHei',
-};
+  {
+    scrollBeyondLastLine: false,
+    automaticLayout: true,
+    theme: 'vs-dark',
+    minimap: {
+      enabled: true,
+    },
+    value: '',
+    fontFamily: 'consolas,Microsoft YaHei',
+  };
 
 /**
  * Return the code editor instance mounted on div element.
@@ -38,23 +46,40 @@ const CodeEditor = () => {
   const dom_ref = useRef<HTMLDivElement | null>(null);
 
   const removeListeners = () => {
-    window.electron.ipcRenderer.removeAllListeners(RendererChannels.FETCH_CODE_TO_SAVE);
-    window.electron.ipcRenderer.removeAllListeners(RendererChannels.SAVE_FILE);
-    window.electron.ipcRenderer.removeAllListeners(RendererChannels.SET_CODEMAP);
+    window.electron.ipcRenderer.removeAllListeners(
+      RendererChannels.FETCH_CODE_TO_SAVE
+    );
+    window.electron.ipcRenderer.removeAllListeners(
+      RendererChannels.FIRST_SAVE_FILE
+    );
+    window.electron.ipcRenderer.removeAllListeners(
+      RendererChannels.SET_CODEMAP
+    );
+    window.electron.ipcRenderer.removeAllListeners(
+      RendererChannels.UPDATE_SAVED_FILE
+    );
+    window.electron.ipcRenderer.removeAllListeners(
+      RendererChannels.FETCH_CODE_TO_SAVE_AS
+    );
   };
 
-  // Code dispatcher
-  const dispatchEditor = useAppDispatch();
+  // Dispatcher
+  const dispatcher = useAppDispatch();
 
   // Hooks the editor instance from redux store.
   const selectEditorInstance = useAppSelector(codeEditorSelectEditor);
 
-  // Hooks the workflow state 
+  // Hooks the saved state from workflow state
   const selectIsSaved = useAppSelector(fileWorkSelectIsFileSaved);
+
+  // Hooks the saved path from workflow state.
+  const selectOpenedFilePath = useAppSelector(fileWorkSelectOpenedFilePath);
 
   useEffect(() => {
     if (selectEditorInstance === null) {
-      dispatchEditor(initEditor({ domRef: dom_ref.current, options: defaultEditorOption }));
+      dispatcher(
+        initEditor({ domRef: dom_ref.current, options: defaultEditorOption })
+      );
     }
     selectEditorInstance?.render();
   }, []);
@@ -62,37 +87,72 @@ const CodeEditor = () => {
   useEffect(() => {
     // Clean listeners every renders.
     removeListeners();
-    
+
     /**
      * Listener for setting codemap.
      */
-    window.electron.ipcRenderer.on(RendererChannels.SET_CODEMAP, (toggle: boolean) => {
-      selectEditorInstance?.updateOptions({ minimap: { enabled: toggle } });
-    });
+    window.electron.ipcRenderer.on(
+      RendererChannels.SET_CODEMAP,
+      (toggle: boolean) => {
+        selectEditorInstance?.updateOptions({ minimap: { enabled: toggle } });
+      }
+    );
 
     /**
      * After receiving the channel information for the open file,
      * stream the string into the editor.
      */
-    window.electron.ipcRenderer.on(RendererChannels.OPEN_FILE, (value: string) => {
-      selectEditorInstance?.setValue(value);
-    });
+    window.electron.ipcRenderer.on(
+      RendererChannels.OPEN_FILE,
+      (value: string) => {
+        selectEditorInstance?.setValue(value);
+      }
+    );
 
     /**
      * After receiving the channel signal to get the code,
      * transmit the content in the editor to the main process by the channel that save-as the action
      */
-    window.electron.ipcRenderer.on(RendererChannels.FETCH_CODE_TO_SAVE_AS, () => {
-      window.electron.ipcRenderer.send(RendererChannels.SAVE_FILE, selectEditorInstance?.getValue());
-    });
+    window.electron.ipcRenderer.on(
+      RendererChannels.FETCH_CODE_TO_SAVE_AS,
+      () => {
+        window.electron.ipcRenderer.send(
+          RendererChannels.FIRST_SAVE_FILE,
+          selectEditorInstance?.getValue()
+        );
+      }
+    );
 
     /**
      * After receiving the channel signal to get the code,
      * transmit the content in the editor to the main process by the channel that save action
      */
     window.electron.ipcRenderer.on(RendererChannels.FETCH_CODE_TO_SAVE, () => {
-      window.electron.ipcRenderer.send(RendererChannels.SAVE_FILE, selectEditorInstance?.getValue());
+      if (!selectIsSaved) {
+        window.electron.ipcRenderer.send(
+          RendererChannels.FIRST_SAVE_FILE,
+          selectEditorInstance?.getValue()
+        );
+      } else {
+        console.log('now', selectOpenedFilePath);
+        window.electron.ipcRenderer.send(RendererChannels.UPDATE_SAVED_FILE, [
+          selectOpenedFilePath,
+          selectEditorInstance?.getValue(),
+        ]);
+      }
     });
+
+    /**
+     *
+     */
+    window.electron.ipcRenderer.on(
+      RendererChannels.RETURN_SAVED_FILE_PATH,
+      (filepath: string) => {
+        dispatcher(setIsSaved(true));
+        dispatcher(setOpenedFilePath(filepath));
+      }
+    );
+
     return removeListeners;
   });
 
