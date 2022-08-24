@@ -158,7 +158,7 @@ const CodeEditor = () => {
     return removeListeners;
   });
 
-  return <div className="tw-h-full tw-w-full" ref={dom_ref} />;
+  return <div className="tw-h-full tw-w-full tw-p-1" ref={dom_ref} />;
 };
 
 export default CodeEditor;

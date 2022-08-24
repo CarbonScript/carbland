@@ -15,7 +15,7 @@ export const MainBroad = () => {
    */
 
   return (
-    <div className="tw-h-screen tw-w-screen tw-bg-gray-800">
+    <div className="tw-h-screen tw-w-screen " style={{backgroundColor:"rgb(30,30,30)"}}>
       <div style={{ height: 'calc(100vh - 22px)', width: '100vw' }}>
         <CodeEditor />
       </div>
