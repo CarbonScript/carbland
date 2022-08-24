@@ -3,7 +3,7 @@ import type { RootState } from '../store';
 
 // Define a type for the slice state
 export interface FileWorkState {
-  OpenedFilePath: string | undefined;
+  MountedFilePath: string | undefined;
   isSaved: boolean;
 }
 
@@ -21,7 +21,7 @@ export interface SetFileSaveAction {
 
 // Define the initial editor state.
 const initialState: FileWorkState = {
-  OpenedFilePath: undefined,
+  MountedFilePath: undefined,
   isSaved: false,
 };
 
@@ -36,8 +36,11 @@ export const FileWorkSlice = createSlice({
      * @param action The dispatched action
      * @returns Returned new state
      */
-    setOpenedFilePath: (state: FileWorkState, action: SetFilePathAction) => {
-      return { ...state, OpenedFilePath: action.payload };
+    setMountedFilePath: (
+      state: FileWorkState,
+      action: SetFilePathAction
+    ): FileWorkState => {
+      return { ...state, MountedFilePath: action.payload };
     },
     /**
      * Set save state for open files.
@@ -45,7 +48,10 @@ export const FileWorkSlice = createSlice({
      * @param action The dispatched action
      * @returns Returned new state
      */
-    setIsSaved: (state: FileWorkState, action: SetFileSaveAction) => {
+    setIsSaved: (
+      state: FileWorkState,
+      action: SetFileSaveAction
+    ): FileWorkState => {
       return { ...state, isSaved: action.payload };
     },
   },
@@ -54,15 +60,15 @@ export const FileWorkSlice = createSlice({
 /**
  * Export actions in FileWorkSlice.
  */
-export const { setOpenedFilePath, setIsSaved } = FileWorkSlice.actions;
+export const { setMountedFilePath, setIsSaved } = FileWorkSlice.actions;
 
 /**
  * Select the path of the opened file.
  * @param state The Root state in redux
  * @returns Opened file path
  */
-export const fileWorkSelectOpenedFilePath = (state: RootState) => {
-  return state.fileWork.OpenedFilePath;
+export const fileWorkSelectMountedFilePath = (state: RootState) => {
+  return state.fileWork.MountedFilePath;
 };
 
 /**

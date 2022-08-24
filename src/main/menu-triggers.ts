@@ -22,8 +22,11 @@ export const menuTriggeredOpenFile = (window: BrowserWindow) => {
       filters: [{ name: 'All Files', extensions: ['*'] }],
     })
     .then((data) => {
-      fs.readFile(data.filePaths[0], 'utf-8', (_err, data) => {
-        window.webContents.send(MainChannels.OPEN_FILE, data);
+      fs.readFile(data.filePaths[0], 'utf-8', (_err, content) => {
+        window.webContents.send(MainChannels.OPEN_FILE, {
+          content: content,
+          filepath: data.filePaths[0],
+        });
       });
     })
     .catch((err) => {

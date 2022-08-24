@@ -3,15 +3,16 @@ import {
   initEditor,
   codeEditorSelectEditor,
 } from 'renderer/slice/CodeEditorSlice';
-import { RendererChannels } from '../channels-renderer';
+import { RendererChannels } from '../declare/channels-renderer';
 import { useAppDispatch, useAppSelector } from 'renderer/hook/redux-hooks';
 import { useEffect, useRef } from 'react';
 import {
   fileWorkSelectIsFileSaved,
-  fileWorkSelectOpenedFilePath,
+  fileWorkSelectMountedFilePath,
   setIsSaved,
-  setOpenedFilePath,
+  setMountedFilePath,
 } from 'renderer/slice/FileWorkSlice';
+import { MountedFile } from 'renderer/declare/file-model';
 
 // Default options for editor
 // For more options, documentation is here
@@ -73,7 +74,7 @@ const CodeEditor = () => {
   const selectIsSaved = useAppSelector(fileWorkSelectIsFileSaved);
 
   // Hooks the saved path from workflow state.
-  const selectOpenedFilePath = useAppSelector(fileWorkSelectOpenedFilePath);
+  const selectMountedFilePath = useAppSelector(fileWorkSelectMountedFilePath);
 
   useEffect(() => {
     if (selectEditorInstance === null) {
@@ -104,8 +105,10 @@ const CodeEditor = () => {
      */
     window.electron.ipcRenderer.on(
       RendererChannels.OPEN_FILE,
-      (value: string) => {
-        selectEditorInstance?.setValue(value);
+      (data: MountedFile) => {
+        dispatcher(setIsSaved(true));
+        dispatcher(setMountedFilePath(data.filepath));
+        selectEditorInstance?.setValue(data.content);
       }
     );
 
@@ -134,9 +137,8 @@ const CodeEditor = () => {
           selectEditorInstance?.getValue()
         );
       } else {
-        console.log('now', selectOpenedFilePath);
         window.electron.ipcRenderer.send(RendererChannels.UPDATE_SAVED_FILE, [
-          selectOpenedFilePath,
+          selectMountedFilePath,
           selectEditorInstance?.getValue(),
         ]);
       }
@@ -149,7 +151,7 @@ const CodeEditor = () => {
       RendererChannels.RETURN_SAVED_FILE_PATH,
       (filepath: string) => {
         dispatcher(setIsSaved(true));
-        dispatcher(setOpenedFilePath(filepath));
+        dispatcher(setMountedFilePath(filepath));
       }
     );
 
