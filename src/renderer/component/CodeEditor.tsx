@@ -1,9 +1,9 @@
 import { editor } from 'monaco-editor';
-import { initEditor, selectEditor } from 'renderer/slice/CodeEditorSlice';
+import { initEditor, codeEditorSelectEditor } from 'renderer/slice/CodeEditorSlice';
 import { RendererChannels } from 'renderer/channels-renderer';
 import { useAppDispatch, useAppSelector } from 'renderer/hook/redux-hooks';
 import { useEffect, useRef } from 'react';
-import { selectIsFileSaved } from 'renderer/slice/FileWorkSlice';
+import { fileWorkSelectIsFileSaved } from 'renderer/slice/FileWorkSlice';
 
 // Default options for editor
 // For more options, documentation is here
@@ -47,10 +47,10 @@ const CodeEditor = () => {
   const dispatchEditor = useAppDispatch();
 
   // Hooks the editor instance from redux store.
-  const selectEditorInstance = useAppSelector(selectEditor);
+  const selectEditorInstance = useAppSelector(codeEditorSelectEditor);
 
   // Hooks the workflow state 
-  const selectIsSaved = useAppSelector(selectIsFileSaved);
+  const selectIsSaved = useAppSelector(fileWorkSelectIsFileSaved);
 
   useEffect(() => {
     if (selectEditorInstance === null) {
@@ -96,7 +96,7 @@ const CodeEditor = () => {
     return removeListeners;
   });
 
-  return <div className=" tw-h-full tw-w-full" ref={dom_ref} />;
+  return <div className="tw-h-full tw-w-full" ref={dom_ref} />;
 };
 
 export default CodeEditor;

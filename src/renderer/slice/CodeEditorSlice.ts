@@ -60,7 +60,7 @@ export const CodeEditorSlice = createSlice({
   initialState,
   reducers: {
     /**
-     * Initializes the state in the code editor, 
+     * Initializes the state in the code editor,
      * which creates a new editor instance based on the options
      * @param _state The code editor state
      * @param action The destroy action
@@ -75,7 +75,7 @@ export const CodeEditorSlice = createSlice({
         editorOptions: action.payload.options,
       };
     },
-    
+
     /**
      * Destroy the code editor state in the store
      * @param state The code editor state
@@ -95,7 +95,7 @@ export const CodeEditorSlice = createSlice({
 export const { initEditor, destroyEditor } = CodeEditorSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
-export const selectEditor = (state: RootState) => {
+export const codeEditorSelectEditor = (state: RootState) => {
   return state.codeEditor.editorInstance;
 };
 

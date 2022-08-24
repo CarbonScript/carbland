@@ -54,14 +54,14 @@ export const FileWorkSlice = createSlice({
 /**
  * Export actions in FileWorkSlice.
  */
-export const { setOpenedFilePath: setFileName, setIsSaved: setFileSave } = FileWorkSlice.actions;
+export const { setOpenedFilePath, setIsSaved } = FileWorkSlice.actions;
 
 /**
  * Select the path of the opened file.
  * @param state The Root state in redux
  * @returns Opened file path
  */
-export const selectOpenedFilePath = (state: RootState) => {
+export const fileWorkSelectOpenedFilePath = (state: RootState) => {
   return state.fileWork.OpenedFilePath;
 };
 
@@ -70,7 +70,7 @@ export const selectOpenedFilePath = (state: RootState) => {
  * @param state The Root state in redux
  * @returns
  */
-export const selectIsFileSaved = (state: RootState) => {
+export const fileWorkSelectIsFileSaved = (state: RootState) => {
   return state.fileWork.isSaved;
 };
 
